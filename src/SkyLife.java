@@ -57,7 +57,7 @@ public class SkyLife {
 		speichern.setBounds(35, 90, 135, 25);
 		frame.getContentPane().add(speichern);
 		
-//		Neues Objekt einfügen
+//		Neues Objekt einfï¿½gen
 		
 		JLayeredPane layeredPaneLeft = new JLayeredPane();
 		layeredPaneLeft.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -82,7 +82,7 @@ public class SkyLife {
 		
 		txtNameEinf = new JTextField();
 		txtNameEinf.setText("Name");
-		txtNameEinf.setBounds(5, 50, 40, 25);
+		txtNameEinf.setBounds(5, 50, 50, 25);
 		layeredPaneLeft.add(txtNameEinf);
 		txtNameEinf.setColumns(10);
 		
@@ -93,13 +93,13 @@ public class SkyLife {
 		
 		txtPosition = new JTextField();
 		txtPosition.setText("Position");
-		txtPosition.setBounds(5, 90, 50, 25);
+		txtPosition.setBounds(5, 90, 65, 25);
 		layeredPaneLeft.add(txtPosition);
 		txtPosition.setColumns(10);
 		
 		Xneu = new JTextField();
 		Xneu.setText("X");
-		Xneu.setBounds(70, 90, 15, 25);
+		Xneu.setBounds(70, 90, 23, 25);
 		layeredPaneLeft.add(Xneu);
 		Xneu.setColumns(10);
 		
@@ -109,7 +109,7 @@ public class SkyLife {
 		
 		Yneu = new JTextField();
 		Yneu.setText("Y");
-		Yneu.setBounds(150, 90, 15, 25);
+		Yneu.setBounds(150, 90, 23, 25);
 		layeredPaneLeft.add(Yneu);
 		Yneu.setColumns(10);
 		
@@ -130,7 +130,7 @@ public class SkyLife {
 		
 		txtNameEnt = new JTextField();
 		txtNameEnt.setText("Name");
-		txtNameEnt.setBounds(5, 15, 40, 25);
+		txtNameEnt.setBounds(5, 15, 50, 25);
 		layeredPaneRigth.add(txtNameEnt);
 		txtNameEnt.setColumns(10);
 		
