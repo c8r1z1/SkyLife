@@ -27,14 +27,13 @@ public class SkyLife {
 	private JTextField txtPosition;
 	private JTextField Xneu;
 	private JTextField Yneu;
-	private JTextField txtNameEnt;
 	private JTextField nameFieldEinf;
 
 	JSpinner spinnerLeft, spinnerRigth;
 	JButton btnEinfgen, btnEntfernen;
-<<<<<<< HEAD
+
 	JComboBox<String> comboBoxTyp, comboBoxNameEnt;
-=======
+
 	private JLayeredPane layeredPaneDelete;
 	private JTextField txtPanelHeight;
 	private JTextField txtPanelHeightadd;
@@ -42,7 +41,7 @@ public class SkyLife {
 	private JTextField textPanelWidthadd;
 	private JButton btnNchsterSchritt;
 	private JPanel panel;
->>>>>>> Christoph
+
 
 	public static void main(String[] args) {
 		SkyLife window = new SkyLife();
@@ -57,6 +56,8 @@ public class SkyLife {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
+		// Buttons
+		
 		JButton laden = new JButton("Laden");
 		laden.setBounds(35, 50, 135, 25);
 		frame.getContentPane().add(laden);
@@ -72,25 +73,14 @@ public class SkyLife {
 		JButton speichern = new JButton("Speichern");
 		speichern.setBounds(35, 90, 135, 25);
 		frame.getContentPane().add(speichern);
-<<<<<<< HEAD
-
-		// Neues Objekt einf�gen
-
-		JLayeredPane layeredPaneLeft = new JLayeredPane();
-		layeredPaneLeft.setBorder(new LineBorder(new Color(0, 0, 0)));
-		layeredPaneLeft.setBounds(375, 50, 250, 170);
-		frame.getContentPane().add(layeredPaneLeft);
-
-=======
 		
-//		Neues Objekt einf�gen
+		//	Neues Objekt einf�gen
 		
 		JLayeredPane layeredPaneAdd = new JLayeredPane();
 		layeredPaneAdd.setBorder(new LineBorder(new Color(0, 0, 0)));
 		layeredPaneAdd.setBounds(375, 50, 250, 170);
 		frame.getContentPane().add(layeredPaneAdd);
 		
->>>>>>> Christoph
 		txtTyp = new JTextField();
 		txtTyp.setEditable(false);
 		txtTyp.setBackground(Color.WHITE);
@@ -98,28 +88,15 @@ public class SkyLife {
 		txtTyp.setBounds(5, 15, 40, 25);
 		layeredPaneAdd.add(txtTyp);
 		txtTyp.setColumns(10);
-<<<<<<< HEAD
 
 		comboBoxTyp = new JComboBox<String>();
 		comboBoxTyp.setBounds(70, 15, 150, 25);
-		layeredPaneLeft.add(comboBoxTyp);
+		layeredPaneAdd.add(comboBoxTyp);
 		comboBoxTyp.addItem("Taube");
 		comboBoxTyp.addItem("Greifvogel");
 		comboBoxTyp.addItem("Flugzeug");
 		comboBoxTyp.addItem("Wolkenkratzer");
-
-=======
 		
-		typField = new JTextField();
-		typField.setBounds(70, 15, 130, 25);
-		layeredPaneAdd.add(typField);
-		typField.setColumns(10);
-		
-		JComboBox comboBoxTyp = new JComboBox();
-		comboBoxTyp.setBounds(200, 15, 20, 25);
-		layeredPaneAdd.add(comboBoxTyp);
-		
->>>>>>> Christoph
 		txtNameEinf = new JTextField();
 		txtNameEinf.setEditable(false);
 		txtNameEinf.setText("Name");
@@ -150,13 +127,8 @@ public class SkyLife {
 
 		spinnerLeft = new JSpinner();
 		spinnerLeft.setBounds(90, 90, 50, 25);
-<<<<<<< HEAD
-		layeredPaneLeft.add(spinnerLeft);
-
-=======
 		layeredPaneAdd.add(spinnerLeft);
-		
->>>>>>> Christoph
+
 		Yneu = new JTextField();
 		Yneu.setEditable(false);
 		Yneu.setText("Y");
@@ -166,27 +138,12 @@ public class SkyLife {
 
 		spinnerRigth = new JSpinner();
 		spinnerRigth.setBounds(170, 90, 50, 25);
-<<<<<<< HEAD
-		layeredPaneLeft.add(spinnerRigth);
-
-=======
 		layeredPaneAdd.add(spinnerRigth);
 		
->>>>>>> Christoph
 		btnEinfgen = new JButton("Einf\u00FCgen");
 		btnEinfgen.setBounds(5, 130, 95, 25);
 		layeredPaneAdd.add(btnEinfgen);
 		
-<<<<<<< HEAD
-
-		// Objekt entfernen
-
-		JLayeredPane layeredPaneRigth = new JLayeredPane();
-		layeredPaneRigth.setBorder(new LineBorder(new Color(0, 0, 0)));
-		layeredPaneRigth.setBounds(670, 50, 250, 90);
-		frame.getContentPane().add(layeredPaneRigth);
-
-=======
 //		Objekt entfernen
 		
 		JLayeredPane layeredPaneDelete;
@@ -195,49 +152,20 @@ public class SkyLife {
 		layeredPaneDelete.setBounds(671, 130, 250, 90);
 		frame.getContentPane().add(layeredPaneDelete);
 		
->>>>>>> Christoph
-		txtNameEnt = new JTextField();
-		txtNameEnt.setEditable(false);
-		txtNameEnt.setText("Name");
-		txtNameEnt.setBounds(5, 15, 50, 25);
-		layeredPaneDelete.add(txtNameEnt);
-		txtNameEnt.setColumns(10);
-<<<<<<< HEAD
-
 		comboBoxNameEnt = new JComboBox<String>();
 		comboBoxNameEnt.setBounds(70, 15, 150, 25);
-		layeredPaneRigth.add(comboBoxNameEnt);
+		layeredPaneDelete.add(comboBoxNameEnt);
 		for (int i = 0; i < ListnameEinf.size(); i++) {
 			comboBoxNameEnt.addItem(ListnameEinf.get(i));
 		}
 
 		btnEntfernen = new JButton("Entfernen");
 		btnEntfernen.setBounds(5, 50, 95, 25);
-		layeredPaneRigth.add(btnEntfernen);
-
-		JPanel panel = new JPanel();
-=======
-		
-		nameFieldEnt = new JTextField();
-		nameFieldEnt.setBounds(70, 15, 130, 25);
-		layeredPaneDelete.add(nameFieldEnt);
-		nameFieldEnt.setColumns(10);
-		
-		JComboBox comboBoxName = new JComboBox();
-		comboBoxName.setBounds(200, 15, 20, 25);
-		layeredPaneDelete.add(comboBoxName);
+		layeredPaneDelete.add(btnEntfernen);
 		
 		btnEntfernen = new JButton("Entfernen");
 		btnEntfernen.setBounds(5, 50, 95, 25);
 		layeredPaneDelete.add(btnEntfernen);
-		
-		
-		JTextPane textInformation = new JTextPane();
-		textInformation.setText("Panelgröße: ... Anzahl Objekte: ...");
-		textInformation.setBackground(SystemColor.window);
-		textInformation.setEditable(false);
-		textInformation.setBounds(40, 705, 800, 25);
-		frame.getContentPane().add(textInformation);
 		
 		//Panel-Größe einstellen
 		
@@ -290,10 +218,17 @@ public class SkyLife {
 		});
 		
 		panel = new JPanel();
->>>>>>> Christoph
 		panel.setBackground(Color.LIGHT_GRAY);
 		panel.setBounds(40, 250, PanelWidth, PanelHeight);
 		frame.getContentPane().add(panel);
+		
+		
+		JTextPane textInformation = new JTextPane();
+		textInformation.setText("Panelgröße: ... Anzahl Objekte: ...");
+		textInformation.setBackground(SystemColor.window);
+		textInformation.setEditable(false);
+		textInformation.setBounds(40, 705, 800, 25);
+		frame.getContentPane().add(textInformation);
 		
 		//Button für schrittweises Ablaufen lassen
 		
