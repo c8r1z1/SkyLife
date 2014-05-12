@@ -21,8 +21,8 @@ public class SkyLifePanel extends JPanel{
 		super.paintComponent(g);
 		
 		
-		int x = Integer.parseInt(app.x.getText());
-		int y = Integer.parseInt(app.y.getText());
+		int x = Integer.parseInt(app.spinnerX.getName());
+		int y = Integer.parseInt(app.spinnerY.getName());
 		g.setColor(Color.cyan);
 		g.fillOval(x, y, 30, 30);
 		
