@@ -1,47 +1,36 @@
 import java.awt.Color;
+import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.border.LineBorder;
 import javax.swing.JTextPane;
-
-import java.awt.SystemColor;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.SwingConstants;
-import javax.swing.JLabel;
+import javax.swing.border.LineBorder;
 
 public class SkyLife {
 
 	private JFrame frame;
-	private JTextField txtTyp;
-	private JTextField txtNameEinf;
-	private JTextField txtPosition;
-	private JTextField Xneu;
-	private JTextField Yneu;
-	private JTextField nameFieldEinf;
 
-	JSpinner spinnerLeft, spinnerRigth;
-	JButton btnEinfgen, btnEntfernen;
-
+	JSpinner spinnerX, spinnerY;
+	JButton laden, speichern, start, stop, btnEinfgen, btnEntfernen,
+			btnSetPanelSize, btnNchsterSchritt;
 	JComboBox<String> comboBoxTyp, comboBoxNameEnt;
+	JLabel lblTyp, lblNameEinf, lblNameEnt, lblPosition, lblX, lblY, lblBreite,
+			lblHoehe;
+	JTextField nameFieldEinf, txtPanelWidhtadd, txtPanelHeighthadd;
+	JTextPane txtInfo;
 
-	private JLayeredPane layeredPaneDelete;
-	private JTextField txtPanelHeight;
-	private JTextField txtPanelHeightadd;
-	private JTextField txtPanelWidth;
-	private JTextField textPanelWidthadd;
-	private JButton btnNchsterSchritt;
+	private JLayeredPane layeredPaneDelete, layeredPaneAdd;
 	private JPanel panel;
-
 
 	public static void main(String[] args) {
 		SkyLife window = new SkyLife();
@@ -51,58 +40,65 @@ public class SkyLife {
 	public SkyLife() {
 
 		frame = new JFrame();
-		frame.setResizable(false);
+		frame.setResizable(true);
 		frame.setBounds(100, 100, 1000, 800);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
-		// Buttons
-		
-		JButton laden = new JButton("Laden");
+		// Button zum Laden des alten Standes
+
+		laden = new JButton("Laden");
 		laden.setBounds(35, 50, 135, 25);
 		frame.getContentPane().add(laden);
 
-		JButton start = new JButton("Start");
+		// Button zum Starten des alten Standes
+
+		start = new JButton("Start");
 		start.setBounds(195, 50, 135, 25);
 		frame.getContentPane().add(start);
 
-		JButton stop = new JButton("Stop");
+		// Button zum Stoppen des Standes
+
+		stop = new JButton("Stop");
 		stop.setBounds(195, 90, 135, 25);
 		frame.getContentPane().add(stop);
 
-		JButton speichern = new JButton("Speichern");
+		// Button zum Speicher des Standes
+
+		speichern = new JButton("Speichern");
 		speichern.setBounds(35, 90, 135, 25);
 		frame.getContentPane().add(speichern);
-		
-		//	Neues Objekt einf�gen
-		
-		JLayeredPane layeredPaneAdd = new JLayeredPane();
+
+		// Button für schrittweises Ablaufen lassen
+
+		btnNchsterSchritt = new JButton("Next Step");
+		btnNchsterSchritt.setEnabled(false);
+		btnNchsterSchritt.setBounds(205, 137, 117, 29);
+		frame.getContentPane().add(btnNchsterSchritt);
+
+		// Neues Objekt einfuegen
+
+		layeredPaneAdd = new JLayeredPane();
 		layeredPaneAdd.setBorder(new LineBorder(new Color(0, 0, 0)));
 		layeredPaneAdd.setBounds(375, 50, 250, 170);
 		frame.getContentPane().add(layeredPaneAdd);
-		
-		txtTyp = new JTextField();
-		txtTyp.setEditable(false);
-		txtTyp.setBackground(Color.WHITE);
-		txtTyp.setText("Typ");
-		txtTyp.setBounds(5, 15, 40, 25);
-		layeredPaneAdd.add(txtTyp);
-		txtTyp.setColumns(10);
+
+		lblTyp = new JLabel("Typ");
+		lblTyp.setBounds(5, 20, 40, 15);
+		layeredPaneAdd.add(lblTyp);
 
 		comboBoxTyp = new JComboBox<String>();
 		comboBoxTyp.setBounds(70, 15, 150, 25);
 		layeredPaneAdd.add(comboBoxTyp);
+		// Typen welche Hinzugefügt werden können
 		comboBoxTyp.addItem("Taube");
 		comboBoxTyp.addItem("Greifvogel");
 		comboBoxTyp.addItem("Flugzeug");
 		comboBoxTyp.addItem("Wolkenkratzer");
-		
-		txtNameEinf = new JTextField();
-		txtNameEinf.setEditable(false);
-		txtNameEinf.setText("Name");
-		txtNameEinf.setBounds(5, 50, 50, 25);
-		layeredPaneAdd.add(txtNameEinf);
-		txtNameEinf.setColumns(10);
+
+		lblNameEinf = new JLabel("Name");
+		lblNameEinf.setBounds(5, 55, 40, 15);
+		layeredPaneAdd.add(lblNameEinf);
 
 		nameFieldEinf = new JTextField();
 		nameFieldEinf.setBounds(70, 50, 150, 25);
@@ -111,47 +107,37 @@ public class SkyLife {
 		List<String> ListnameEinf = new ArrayList<String>();
 		ListnameEinf.add(nameFieldEinf.getText());
 
-		txtPosition = new JTextField();
-		txtPosition.setEditable(false);
-		txtPosition.setText("Position");
-		txtPosition.setBounds(5, 90, 65, 25);
-		layeredPaneAdd.add(txtPosition);
-		txtPosition.setColumns(10);
+		lblPosition = new JLabel("Position");
+		lblPosition.setBounds(5, 95, 50, 15);
+		layeredPaneAdd.add(lblPosition);
 
-		Xneu = new JTextField();
-		Xneu.setEditable(false);
-		Xneu.setText("X");
-		Xneu.setBounds(70, 90, 23, 25);
-		layeredPaneAdd.add(Xneu);
-		Xneu.setColumns(10);
+		lblX = new JLabel("X");
+		lblX.setBounds(70, 95, 15, 15);
+		layeredPaneAdd.add(lblX);
 
-		spinnerLeft = new JSpinner();
-		spinnerLeft.setBounds(90, 90, 50, 25);
-		layeredPaneAdd.add(spinnerLeft);
+		spinnerX = new JSpinner();
+		spinnerX.setBounds(90, 90, 50, 25);
+		layeredPaneAdd.add(spinnerX);
 
-		Yneu = new JTextField();
-		Yneu.setEditable(false);
-		Yneu.setText("Y");
-		Yneu.setBounds(150, 90, 23, 25);
-		layeredPaneAdd.add(Yneu);
-		Yneu.setColumns(10);
+		lblY = new JLabel("Y");
+		lblY.setBounds(150, 95, 15, 15);
+		layeredPaneAdd.add(lblY);
 
-		spinnerRigth = new JSpinner();
-		spinnerRigth.setBounds(170, 90, 50, 25);
-		layeredPaneAdd.add(spinnerRigth);
-		
+		spinnerY = new JSpinner();
+		spinnerY.setBounds(170, 90, 50, 25);
+		layeredPaneAdd.add(spinnerY);
+
 		btnEinfgen = new JButton("Einf\u00FCgen");
-		btnEinfgen.setBounds(5, 130, 95, 25);
+		btnEinfgen.setBounds(5, 130, 100, 25);
 		layeredPaneAdd.add(btnEinfgen);
-		
-//		Objekt entfernen
-		
-		JLayeredPane layeredPaneDelete;
+
+		// Objekt entfernen
+
 		layeredPaneDelete = new JLayeredPane();
 		layeredPaneDelete.setBorder(new LineBorder(new Color(0, 0, 0)));
-		layeredPaneDelete.setBounds(671, 130, 250, 90);
+		layeredPaneDelete.setBounds(670, 130, 250, 90);
 		frame.getContentPane().add(layeredPaneDelete);
-		
+
 		comboBoxNameEnt = new JComboBox<String>();
 		comboBoxNameEnt.setBounds(70, 15, 150, 25);
 		layeredPaneDelete.add(comboBoxNameEnt);
@@ -160,81 +146,70 @@ public class SkyLife {
 		}
 
 		btnEntfernen = new JButton("Entfernen");
-		btnEntfernen.setBounds(5, 50, 95, 25);
+		btnEntfernen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		btnEntfernen.setBounds(5, 50, 100, 25);
 		layeredPaneDelete.add(btnEntfernen);
-		
-		btnEntfernen = new JButton("Entfernen");
-		btnEntfernen.setBounds(5, 50, 95, 25);
-		layeredPaneDelete.add(btnEntfernen);
-		
-		//Panel-Größe einstellen
-		
+
+		lblNameEnt = new JLabel("Name");
+		lblNameEnt.setBounds(5, 20, 40, 15);
+		layeredPaneDelete.add(lblNameEnt);
+
+		// Panel-Größe einstellen
+
 		JLayeredPane layeredPanePanelSize = new JLayeredPane();
 		layeredPanePanelSize.setBorder(new LineBorder(new Color(0, 0, 0)));
-		layeredPanePanelSize.setBounds(671, 50, 250, 70);
+		layeredPanePanelSize.setBounds(670, 50, 250, 70);
 		frame.getContentPane().add(layeredPanePanelSize);
-		
-		txtPanelHeight = new JTextField();
-		txtPanelHeight.setEditable(false);
-		txtPanelHeight.setText("Höhe");
-		txtPanelHeight.setBounds(6, 6, 50, 28);
-		layeredPanePanelSize.add(txtPanelHeight);
-		txtPanelHeight.setColumns(10);
-		
-		txtPanelHeightadd = new JTextField();
-		txtPanelHeightadd.setHorizontalAlignment(SwingConstants.RIGHT);
-		txtPanelHeightadd.setText("450");
-		txtPanelHeightadd.setBounds(62, 6, 50, 28);
-		layeredPanePanelSize.add(txtPanelHeightadd);
-		txtPanelHeightadd.setColumns(10);
-		int PanelHeight = Integer.parseInt(txtPanelHeightadd.getText());
-		
-		txtPanelWidth = new JTextField();
-		txtPanelWidth.setEditable(false);
-		txtPanelWidth.setText("Breite");
-		txtPanelWidth.setBounds(124, 6, 50, 28);
-		layeredPanePanelSize.add(txtPanelWidth);
-		txtPanelWidth.setColumns(10);
-		
-		textPanelWidthadd = new JTextField();
-		textPanelWidthadd.setText("900");
-		textPanelWidthadd.setBounds(186, 6, 58, 28);
-		layeredPanePanelSize.add(textPanelWidthadd);
-		textPanelWidthadd.setColumns(10);
-		int PanelWidth = Integer.parseInt(textPanelWidthadd.getText());
-		
-		JButton btnSetPanelSize = new JButton("Setzen");
-		btnSetPanelSize.setBounds(737, 88, 117, 29);
-		frame.getContentPane().add(btnSetPanelSize);
-		
-		btnSetPanelSize.addActionListener(new ActionListener(){
 
-			@Override
+		lblBreite = new JLabel("Breite");
+		lblBreite.setBounds(5, 10, 40, 15);
+		layeredPanePanelSize.add(lblBreite);
+
+		txtPanelWidhtadd = new JTextField();
+		txtPanelWidhtadd.setText("900");
+		txtPanelWidhtadd.setBounds(55, 5, 50, 28);
+		layeredPanePanelSize.add(txtPanelWidhtadd);
+		txtPanelWidhtadd.setColumns(10);
+
+		lblHoehe = new JLabel("Höhe");
+		lblHoehe.setBounds(120, 10, 40, 15);
+		layeredPanePanelSize.add(lblHoehe);
+
+		txtPanelHeighthadd = new JTextField();
+		txtPanelHeighthadd.setText("450");
+		txtPanelHeighthadd.setBounds(170, 5, 58, 28);
+		layeredPanePanelSize.add(txtPanelHeighthadd);
+		txtPanelHeighthadd.setColumns(10);
+
+		btnSetPanelSize = new JButton("Setzen");
+		btnSetPanelSize.setBounds(5, 40, 100, 25);
+		layeredPanePanelSize.add(btnSetPanelSize);
+
+		btnSetPanelSize.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println(e.getActionCommand() + " clicked!");
-				panel.repaint();
+				int PanelHeight = Integer.parseInt(txtPanelHeighthadd.getText());
+				int PanelWidth = Integer.parseInt(txtPanelWidhtadd.getText());
+				panel.setBounds(40, 250, PanelWidth, PanelHeight);
+				txtInfo.setBounds(40, 255 + PanelHeight, 400, 25);
+				txtInfo.setText("Panelgröße: " + PanelWidth + " x "
+						+ PanelHeight + " Anzahl Objekte:...");
 			}
-			
 		});
-		
+
 		panel = new JPanel();
 		panel.setBackground(Color.LIGHT_GRAY);
-		panel.setBounds(40, 250, PanelWidth, PanelHeight);
+		panel.setBounds(40, 250, 900, 450);
 		frame.getContentPane().add(panel);
-		
-		
-		JTextPane textInformation = new JTextPane();
-		textInformation.setText("Panelgröße: ... Anzahl Objekte: ...");
-		textInformation.setBackground(SystemColor.window);
-		textInformation.setEditable(false);
-		textInformation.setBounds(40, 705, 800, 25);
-		frame.getContentPane().add(textInformation);
-		
-		//Button für schrittweises Ablaufen lassen
-		
-		btnNchsterSchritt = new JButton("Next Step");
-		btnNchsterSchritt.setEnabled(false);
-		btnNchsterSchritt.setBounds(205, 137, 117, 29);
-		frame.getContentPane().add(btnNchsterSchritt);
+
+		txtInfo = new JTextPane();
+		txtInfo.setText("Panelgröße: 900 x 450 Anzahl Objekte: ...");
+		txtInfo.setBackground(SystemColor.window);
+		txtInfo.setEditable(false);
+		txtInfo.setBounds(40, 705, 400, 25);
+		frame.getContentPane().add(txtInfo);
 	}
 }
