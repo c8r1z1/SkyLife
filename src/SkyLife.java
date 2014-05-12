@@ -37,6 +37,7 @@ public class SkyLife {
 	public SkyLife() {
 
 		frame = new JFrame();
+		frame.setResizable(false);
 		frame.setBounds(100, 100, 1000, 800);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
