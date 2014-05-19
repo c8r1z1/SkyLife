@@ -14,13 +14,17 @@ public class SkyLifePanel extends JPanel{
 	
 	public SkyLifePanel(SkyLife app){
 		this.app = app;
+		
 	}
 	
 	@Override
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		
+		int x = (Integer) app.spinnerX.getValue();
+		int y = (Integer) app.spinnerY.getValue();
 		
+<<<<<<< HEAD
 		int x = (int) app.spinnerX.getValue();
 		int y = (int) (app.spinnerY.getValue());
 		g.setColor(Color.cyan);
@@ -41,7 +45,17 @@ public class SkyLifePanel extends JPanel{
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
+=======
+		Image img;
+		try {
+			img = ImageIO.read(new File("img/flugzeug.png"));
+			g.drawImage(img, x, y, null);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+>>>>>>> Christoph
 		
 		
 	}
+	
 }
