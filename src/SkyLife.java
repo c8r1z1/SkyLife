@@ -32,14 +32,12 @@ public class SkyLife {
 	JLabel lblNameEinf, lblNameEnt, lblHoehe, lblTyp, lblPosition, lblX, lblY,
 			lblHhe, lblBreite, lblPanelgre;
 	JTextField txtPanelWidthadd, txtPanelHeightadd;
-	private JTextPane txtInfo,txtpnKilledAnimals;
+	private JTextPane txtInfo, txtpnKilledAnimals;
 
 	private JLayeredPane layeredPaneDelete;
 	private JPanel panel;
 	private int PanelHeight = 450;
 	private int PanelWidth = 900;
-
-
 
 	public static void main(String[] args) {
 		SkyLife window = new SkyLife();
@@ -146,6 +144,16 @@ public class SkyLife {
 		btnEinfgen.setBounds(5, 130, 100, 25);
 		layeredPaneAdd.add(btnEinfgen);
 
+		btnEinfgen.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent a) {
+				System.out.println(a.getActionCommand() + " clicked!");
+				System.out.println(spinnerX.getClass() + " "
+						+ spinnerY.getValue());
+			}
+
+		});
+
 		// Panel-Größe einstellen
 
 		JLayeredPane layeredPanePanelSize = new JLayeredPane();
@@ -233,15 +241,14 @@ public class SkyLife {
 
 		panel = new JPanel();
 		panel.setBackground(Color.LIGHT_GRAY);
-
-		frame.getContentPane().add(panel);
 		panel.setBounds(40, 250, PanelWidth, PanelHeight);
+		frame.getContentPane().add(panel);
 
 		// Anzeige unterhalb des Panels
 
 		txtInfo = new JTextPane();
-		txtInfo.setText("Panelgröße:   Höhe: " + PanelHeight
-				+ " Breite: " + PanelWidth + "      Anzahl Objekte: ...");
+		txtInfo.setText("Panelgröße:   Höhe: " + PanelHeight + " Breite: "
+				+ PanelWidth + "      Anzahl Objekte: ...");
 		txtInfo.setBackground(SystemColor.window);
 		txtInfo.setEditable(false);
 		txtInfo.setBounds(40, 250 + PanelHeight + 5, 450, 25);

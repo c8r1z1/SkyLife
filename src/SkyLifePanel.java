@@ -29,13 +29,13 @@ public class SkyLifePanel extends JPanel{
 		g.setColor(Color.green);
 		g.drawOval(x - 5, y - 5, 40, 40);
 		
-		Image img;
-		try {
-			img = ImageIO.read(new File("img/Fisch.gif"));
-			g.drawImage(img, 10, 10, null);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		Image img;
+//		try {
+//			img = ImageIO.read(new File("img/Fisch.gif"));
+//			g.drawImage(img, 10, 10, null);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 		
 		
 	}
