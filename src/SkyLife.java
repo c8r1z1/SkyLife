@@ -130,30 +130,39 @@ public class SkyLife {
 
 		spinnerX = new JSpinner();
 		layeredPaneAdd.setLayer(spinnerX, 0);
-		spinnerX.setBounds(90, 90, 50, 25);
+		spinnerX.setBounds(90, 90, 61, 25);
 		layeredPaneAdd.add(spinnerX);
 
 		lblY = new JLabel("Y:");
 		lblY.setHorizontalAlignment(SwingConstants.CENTER);
-		lblY.setBounds(144, 95, 24, 16);
+		lblY.setBounds(150, 94, 24, 16);
 		layeredPaneAdd.add(lblY);
 
 		spinnerY = new JSpinner();
-		spinnerY.setBounds(170, 90, 50, 25);
+		spinnerY.setBounds(170, 90, 61, 25);
 		layeredPaneAdd.add(spinnerY);
 
 		btnEinfgen = new JButton("Einf\u00FCgen");
 		btnEinfgen.setBounds(5, 130, 100, 25);
 		layeredPaneAdd.add(btnEinfgen);
 		
+		//Überarbeitung notwendig
+		String errormessage = null;
+		if((int) spinnerX.getValue() > PanelWidth || (int) spinnerY.getValue() > PanelHeight){
+			errormessage = "Objekt liegt nicht innerhalb der Anzeige!";
+		}
+		else{
 		btnEinfgen.addActionListener(new ActionListener() {
-
+			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				//So oder schönere Möglichkeit
+				frame.getContentPane().add(panel);
 				panel.repaint();
 				
 			}	
 		});
+		}
 
 		// Panel-Größe einstellen
 
@@ -239,10 +248,13 @@ public class SkyLife {
 		btnEntfernen.setBounds(5, 50, 95, 25);
 		layeredPaneDelete.add(btnEntfernen);
 
+		
+		//Panel
+		
 		panel = new SkyLifePanel(this);
 		panel.setBackground(Color.WHITE);
 		panel.setBounds(40, 250, PanelWidth, PanelHeight);
-		frame.getContentPane().add(panel);
+
 
 
 		// Anzeige unterhalb des Panels
@@ -261,6 +273,13 @@ public class SkyLife {
 		txtpnKilledAnimals.setEditable(false);
 		txtpnKilledAnimals.setBounds(798, 250 + PanelHeight + 5, 142, 25);
 		frame.getContentPane().add(txtpnKilledAnimals);
+		
+		
+		//Feld für Ausgabe von Fehlermeldungen
+		JLabel lblMessage = new JLabel("Message: " + errormessage);
+		lblMessage.setForeground(Color.RED);
+		lblMessage.setBounds(6, 742, 595, 16);
+		frame.getContentPane().add(lblMessage);
 
 	}
 }
