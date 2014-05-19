@@ -143,24 +143,16 @@ public class SkyLife {
 		btnEinfgen = new JButton("Einf\u00FCgen");
 		btnEinfgen.setBounds(5, 130, 100, 25);
 		layeredPaneAdd.add(btnEinfgen);
-		
-		btnEinfgen.addActionListener(new ActionListener() {
 
-			@Override
+		btnEinfgen.addActionListener(new ActionListener() {
+			
 			public void actionPerformed(ActionEvent e) {
-				panel.repaint();
+				frame.getContentPane().add(panel);
 				
-			}	
-		});
+				
+				panel.repaint();
 
-		btnEinfgen.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent a) {
-				System.out.println(a.getActionCommand() + " clicked!");
-				System.out.println(spinnerX.getClass() + " "
-						+ spinnerY.getValue());
 			}
-
 		});
 
 		// Panel-Größe einstellen
@@ -247,18 +239,10 @@ public class SkyLife {
 		btnEntfernen.setBounds(5, 50, 95, 25);
 		layeredPaneDelete.add(btnEntfernen);
 
-<<<<<<< HEAD
-		panel = new JPanel();
-		panel.setBackground(Color.LIGHT_GRAY);
-		panel.setBounds(40, 250, PanelWidth, PanelHeight);
-		frame.getContentPane().add(panel);
-=======
 		panel = new SkyLifePanel(this);
 		panel.setBackground(Color.WHITE);
 		panel.setBounds(40, 250, PanelWidth, PanelHeight);
-		frame.getContentPane().add(panel);
-
->>>>>>> 7d290ba6b0f793a002af2a34e11d90224557e734
+		//frame.getContentPane().add(panel);
 
 		// Anzeige unterhalb des Panels
 
