@@ -162,16 +162,6 @@ public class SkyLife {
 		});
 		}
 
-		btnEinfgen.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent a) {
-				System.out.println(a.getActionCommand() + " clicked!");
-				System.out.println(spinnerX.getClass() + " "
-						+ spinnerY.getValue());
-			}
-
-		});
-
 		// Panel-Größe einstellen
 
 		JLayeredPane layeredPanePanelSize = new JLayeredPane();
@@ -255,25 +245,11 @@ public class SkyLife {
 		btnEntfernen = new JButton("Entfernen");
 		btnEntfernen.setBounds(5, 50, 95, 25);
 		layeredPaneDelete.add(btnEntfernen);
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-		panel = new JPanel();
-		panel.setBackground(Color.LIGHT_GRAY);
-		panel.setBounds(40, 250, PanelWidth, PanelHeight);
-		frame.getContentPane().add(panel);
-=======
-=======
 		
 		//Panel
-		
->>>>>>> Christoph
 		panel = new SkyLifePanel(this);
 		panel.setBackground(Color.WHITE);
 		panel.setBounds(40, 250, PanelWidth, PanelHeight);
-
-
->>>>>>> 7d290ba6b0f793a002af2a34e11d90224557e734
 
 		// Anzeige unterhalb des Panels
 
