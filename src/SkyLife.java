@@ -35,7 +35,7 @@ public class SkyLife {
 	private JTextPane txtInfo,txtpnKilledAnimals;
 
 	private JLayeredPane layeredPaneDelete;
-	private JPanel panel;
+	private SkyLifePanel panel;
 	private int PanelHeight = 450;
 	private int PanelWidth = 900;
 
@@ -145,6 +145,15 @@ public class SkyLife {
 		btnEinfgen = new JButton("Einf\u00FCgen");
 		btnEinfgen.setBounds(5, 130, 100, 25);
 		layeredPaneAdd.add(btnEinfgen);
+		
+		btnEinfgen.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				panel.repaint();
+				
+			}	
+		});
 
 		// Panel-Größe einstellen
 
@@ -212,7 +221,6 @@ public class SkyLife {
 		layeredPaneDelete = new JLayeredPane();
 		layeredPaneDelete.setBorder(new LineBorder(new Color(0, 0, 0)));
 		layeredPaneDelete.setBounds(671, 137, 250, 83);
-
 		frame.getContentPane().add(layeredPaneDelete);
 
 		lblNameEnt = new JLabel("Name:");
@@ -231,11 +239,11 @@ public class SkyLife {
 		btnEntfernen.setBounds(5, 50, 95, 25);
 		layeredPaneDelete.add(btnEntfernen);
 
-		panel = new JPanel();
-		panel.setBackground(Color.LIGHT_GRAY);
-
-		frame.getContentPane().add(panel);
+		panel = new SkyLifePanel(this);
+		panel.setBackground(Color.WHITE);
 		panel.setBounds(40, 250, PanelWidth, PanelHeight);
+		frame.getContentPane().add(panel);
+
 
 		// Anzeige unterhalb des Panels
 
