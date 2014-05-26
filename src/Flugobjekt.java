@@ -5,4 +5,10 @@ public class Flugobjekt extends Figur{
 		super(name);
 	}
 
+	
+	public boolean collidesWith(Flugzeug flugzeug) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
