@@ -34,13 +34,7 @@ public class SkyLifePanel extends JPanel {
 
 		
 		Image img;
-<<<<<<< HEAD
-		try {
-			img = ImageIO.read(new File("img/wolkenkratzer.png"));
-			g.drawImage(img, x, y, null);
-		} catch (IOException e) {
-			e.printStackTrace();
-=======
+
 		if(app.comboBoxTyp.getSelectedItem().toString() == "Taube"){
 			img = taubeImg;
 		}
@@ -67,7 +61,6 @@ public class SkyLifePanel extends JPanel {
 			if(f instanceof Wolkenkratzer) {
 				g.drawImage(wkImg, f.x, f.y, null);	
 			}
->>>>>>> Christoph
 		}		
 	}
 	

@@ -154,22 +154,7 @@ public class SkyLife {
 
 		// Überarbeitung notwendig
 		String errormessage = null;
-<<<<<<< HEAD
-		if((Integer) spinnerX.getValue() > PanelWidth || (Integer) spinnerY.getValue() > PanelHeight){
-			errormessage = "Objekt liegt nicht innerhalb der Anzeige!";
-		}
-		else{
-		btnEinfgen.addActionListener(new ActionListener() {
-			
-			
-			public void actionPerformed(ActionEvent e) {
-				//So oder schönere Möglichkeit
-				frame.getContentPane().add(panel);
-				panel.repaint();
-				
-			}	
-		});
-=======
+
 		if ((int) spinnerX.getValue() > PanelWidth
 				|| (int) spinnerY.getValue() > PanelHeight) {
 			errormessage = "Objekt liegt nicht innerhalb der Anzeige!";
@@ -226,7 +211,7 @@ public class SkyLife {
 					}
 				}
 			});
->>>>>>> Christoph
+
 		}
 
 		// Panel-Größe einstellen
@@ -377,3 +362,5 @@ public class SkyLife {
 
 	}
 }
+	
+	

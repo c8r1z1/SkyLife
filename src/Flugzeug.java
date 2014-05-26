@@ -4,13 +4,10 @@
 public class Flugzeug extends Figur {
 
 	static double speed = 5;
-<<<<<<< HEAD
 	int x, y;
 	int width = 100;
 	int height = 80;
-=======
-	public String img = "img/flugzeug.png";
->>>>>>> Christoph
+
 
 	public Flugzeug(String name, int x, int y) {
 		super(name, x, y);
