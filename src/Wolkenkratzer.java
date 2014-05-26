@@ -1,9 +1,9 @@
 
-public class Wolkenkratzer {
-	String name;
-	
+public class Wolkenkratzer extends Figur{
+		
 	public Wolkenkratzer(String name){
-		this.name = name;
+		super(name);
+		form f = form.Rechteck;
 	}
 
 }
