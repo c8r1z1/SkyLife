@@ -146,13 +146,13 @@ public class SkyLife {
 		
 		//Überarbeitung notwendig
 		String errormessage = null;
-		if((int) spinnerX.getValue() > PanelWidth || (int) spinnerY.getValue() > PanelHeight){
+		if((Integer) spinnerX.getValue() > PanelWidth || (Integer) spinnerY.getValue() > PanelHeight){
 			errormessage = "Objekt liegt nicht innerhalb der Anzeige!";
 		}
 		else{
 		btnEinfgen.addActionListener(new ActionListener() {
 			
-			@Override
+			
 			public void actionPerformed(ActionEvent e) {
 				//So oder schönere Möglichkeit
 				frame.getContentPane().add(panel);

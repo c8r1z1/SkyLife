@@ -1,4 +1,3 @@
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.io.File;
@@ -26,7 +25,7 @@ public class SkyLifePanel extends JPanel {
 		
 		Image img;
 		try {
-			img = ImageIO.read(new File("img/flugzeug.png"));
+			img = ImageIO.read(new File("img/wolkenkratzer.png"));
 			g.drawImage(img, x, y, null);
 		} catch (IOException e) {
 			e.printStackTrace();
