@@ -39,6 +39,16 @@ public class SkyLife {
 	private int PanelHeight = 450;
 	private int PanelWidth = 900;
 
+	// Objekt Liste für Info-Anzeige unter dem Panel
+	public List<Figur> ObjectList = new ArrayList<Figur>();
+
+	// Counter für getötete Vögel(Eventuell Synchronized nutzen wegen kritischem
+	// Abschnitt bei Erhöhung)
+	public int killedAnimals = 0;
+	
+	List<String> ListNameEinf = new ArrayList<String>();
+	
+
 	public static void main(String[] args) {
 		SkyLife window = new SkyLife();
 		window.frame.setVisible(true);
@@ -113,8 +123,6 @@ public class SkyLife {
 		nameFieldEinf.setBounds(70, 50, 150, 25);
 		layeredPaneAdd.add(nameFieldEinf);
 		nameFieldEinf.setColumns(10);
-		List<String> ListnameEinf = new ArrayList<String>();
-		ListnameEinf.add(nameFieldEinf.getText());
 
 		lblPosition = new JLabel("Position:");
 		lblPosition.setHorizontalAlignment(SwingConstants.LEFT);
@@ -143,23 +151,65 @@ public class SkyLife {
 		btnEinfgen = new JButton("Einf\u00FCgen");
 		btnEinfgen.setBounds(5, 130, 100, 25);
 		layeredPaneAdd.add(btnEinfgen);
-		
-		//Überarbeitung notwendig
+
+		// Überarbeitung notwendig
 		String errormessage = null;
-		if((int) spinnerX.getValue() > PanelWidth || (int) spinnerY.getValue() > PanelHeight){
+		if ((int) spinnerX.getValue() > PanelWidth
+				|| (int) spinnerY.getValue() > PanelHeight) {
 			errormessage = "Objekt liegt nicht innerhalb der Anzeige!";
-		}
-		else{
-		btnEinfgen.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				//So oder schönere Möglichkeit
-				frame.getContentPane().add(panel);
-				panel.repaint();
-				
-			}	
-		});
+		} else {
+			btnEinfgen.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// So oder schönere Möglichkeit
+					boolean nameInUse = false;
+					for (int i = 0; i < ObjectList.size(); i++) {
+						String name = ObjectList.get(i).name;
+						if (nameFieldEinf.getText().equals(name)) {
+							nameInUse = true;
+							break;
+						}
+					}
+
+					if (!nameInUse && nameFieldEinf.getText() != "") {
+						if (comboBoxTyp.getSelectedItem().toString() == "Taube") {
+							Taube taube = new Taube(nameFieldEinf.getText(), (Integer) spinnerX.getValue(), (Integer) spinnerY.getValue());
+							ObjectList.add(taube);
+							// System.out.println(nameFieldEinf.getText());
+						} else if (comboBoxTyp.getSelectedItem().toString() == "Greifvogel") {
+							Greifvogel gv = new Greifvogel(nameFieldEinf
+									.getText(), (Integer) spinnerX.getValue(), (Integer) spinnerY.getValue());
+							ObjectList.add(gv);
+							// System.out.println(nameFieldEinf.getText());
+						} else if (comboBoxTyp.getSelectedItem().toString() == "Flugzeug") {
+							Flugzeug fz = new Flugzeug(nameFieldEinf.getText(), (Integer) spinnerX.getValue(), (Integer) spinnerY.getValue());
+							ObjectList.add(fz);
+							// System.out.println(nameFieldEinf.getText());
+						} else {
+							Wolkenkratzer wk = new Wolkenkratzer(nameFieldEinf
+									.getText(), (Integer) spinnerX.getValue(), (Integer) spinnerY.getValue());
+							ObjectList.add(wk);
+							// System.out.println(nameFieldEinf.getText());
+							// System.out.println(ObjectList.toString());
+						}
+						frame.getContentPane().add(panel);
+						panel.repaint();
+						
+						//Hinzufügen zur Liste für Entfernung
+						ListNameEinf.add(nameFieldEinf.getText());
+						comboBoxNameEnt.addItem(nameFieldEinf.getText());
+						
+						//Aktualisierung Info unterhalb des Panels
+						txtInfo.setText("Panelgröße:   Höhe: " + PanelHeight
+								+ " Breite: " + PanelWidth
+								+ "      Anzahl Objekte: " + ObjectList.size());
+						
+					} else {
+						System.out.println("kein gültiger Name einegegben!");
+					}
+				}
+			});
 		}
 
 		// Panel-Größe einstellen
@@ -212,7 +262,7 @@ public class SkyLife {
 				txtInfo.setBounds(40, 250 + PanelHeight + 5, 450, 25);
 				txtInfo.setText("Panelgröße:   Höhe: " + PanelHeight
 						+ " Breite: " + PanelWidth
-						+ "      Anzahl Objekte: ...");
+						+ "      Anzahl Objekte: " + ObjectList.size());
 				txtpnKilledAnimals.setBounds(798, 250 + PanelHeight + 5, 142,
 						25);
 				// seems not to be needed‚
@@ -238,15 +288,49 @@ public class SkyLife {
 		comboBoxNameEnt = new JComboBox<String>();
 		comboBoxNameEnt.setBounds(70, 15, 150, 25);
 		layeredPaneDelete.add(comboBoxNameEnt);
-		for (int i = 0; i < ListnameEinf.size(); i++) {
-			comboBoxNameEnt.addItem(ListnameEinf.get(i));
-		}
 
 		btnEntfernen = new JButton("Entfernen");
 		btnEntfernen.setBounds(5, 50, 95, 25);
 		layeredPaneDelete.add(btnEntfernen);
 		
-		//Panel
+		btnEntfernen.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				
+				//Entfernung Objektliste
+				//Entfernung Objekt seperat notwendig oder reicht Garbage Collector?
+				for (int i = 0; i < ObjectList.size(); i++){
+					if(ObjectList.get(i).name.equalsIgnoreCase((String) comboBoxNameEnt.getSelectedItem())){
+						ObjectList.remove(i);
+						System.out.println(ObjectList.toString());
+						break;
+					}
+				}
+				
+				//Entfernen aus Auswahlliste in ComboBox für Entfernung
+				
+				for (int i = 0; i < ListNameEinf.size(); i++){
+					if(ListNameEinf.get(i).equals((String) comboBoxNameEnt.getSelectedItem())){
+						comboBoxNameEnt.removeAllItems();
+						ListNameEinf.remove(i);
+						System.out.println(ListNameEinf);
+						break;
+					}
+				}
+				for (int i = 0; i < ListNameEinf.size(); i++){
+					comboBoxNameEnt.addItem(ListNameEinf.get(i));
+				}
+				
+				//Aktualisierung Info Anzeige + Panel
+				panel.repaint();
+				txtInfo.setText("Panelgröße:   Höhe: " + PanelHeight
+						+ " Breite: " + PanelWidth
+						+ "      Anzahl Objekte: " + ObjectList.size());
+
+			}
+		});
+
+		// Panel
 		panel = new SkyLifePanel(this);
 		panel.setBackground(Color.WHITE);
 		panel.setBounds(40, 250, PanelWidth, PanelHeight);
@@ -255,21 +339,20 @@ public class SkyLife {
 
 		txtInfo = new JTextPane();
 		txtInfo.setText("Panelgröße:   Höhe: " + PanelHeight + " Breite: "
-				+ PanelWidth + "      Anzahl Objekte: ...");
+				+ PanelWidth + "      Anzahl Objekte: " + ObjectList.size());
 		txtInfo.setBackground(SystemColor.window);
 		txtInfo.setEditable(false);
 		txtInfo.setBounds(40, 250 + PanelHeight + 5, 450, 25);
 		frame.getContentPane().add(txtInfo);
 
 		txtpnKilledAnimals = new JTextPane();
-		txtpnKilledAnimals.setText("Killed animals: ...");
+		txtpnKilledAnimals.setText("Tote Vögel: " + killedAnimals);
 		txtpnKilledAnimals.setBackground(SystemColor.window);
 		txtpnKilledAnimals.setEditable(false);
 		txtpnKilledAnimals.setBounds(798, 250 + PanelHeight + 5, 142, 25);
 		frame.getContentPane().add(txtpnKilledAnimals);
-		
-		
-		//Feld für Ausgabe von Fehlermeldungen
+
+		// Feld für Ausgabe von Fehlermeldungen
 		JLabel lblMessage = new JLabel("Message: " + errormessage);
 		lblMessage.setForeground(Color.RED);
 		lblMessage.setBounds(6, 742, 595, 16);
