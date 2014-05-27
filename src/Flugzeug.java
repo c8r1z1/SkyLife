@@ -3,13 +3,9 @@
 
 public class Flugzeug extends Flugobjekt {
 
-	int x, y;
-	int width = 100;
-	int height = 80;
 
-
-	public Flugzeug(String name, int x, int y, int speed) {
-		super(name, x, y, speed);
+	public Flugzeug(String name, int x, int y, int speed, int height, int width) {
+		super(name, x, y, speed, height, width);
 		form f = form.Kreis;
 	}
 
