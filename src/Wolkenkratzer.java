@@ -6,8 +6,8 @@ public class Wolkenkratzer extends Figur{
 	int height = 325;
 	
 		
-	public Wolkenkratzer(String name, int x, int y){
-		super(name, x, y);
+	public Wolkenkratzer(String name, int x, int y, int speed){
+		super(name, x, y, speed);
 		form f = form.Rechteck;
 	}
 

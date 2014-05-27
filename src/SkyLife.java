@@ -35,7 +35,7 @@ public class SkyLife {
 	private JTextPane txtInfo, txtpnKilledAnimals;
 
 	private JLayeredPane layeredPaneDelete;
-	private SkyLifePanel panel;
+	public SkyLifePanel panel;
 	private int PanelHeight = 450;
 	private int PanelWidth = 900;
 
@@ -48,10 +48,15 @@ public class SkyLife {
 	
 	List<String> ListNameEinf = new ArrayList<String>();
 	
+	static MovementThread tmov;
+	
 
 	public static void main(String[] args) {
 		SkyLife window = new SkyLife();
 		window.frame.setVisible(true);
+		tmov = new MovementThread(window);
+		//trepaint = new RepaintThread();
+
 	}
 
 	public SkyLife() {
@@ -73,6 +78,14 @@ public class SkyLife {
 		start = new JButton("Start");
 		start.setBounds(195, 50, 135, 25);
 		frame.getContentPane().add(start);
+		
+		start.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				tmov.start();
+
+			}
+		});
 
 		// Button zum Stoppen des Standes
 
@@ -175,21 +188,21 @@ public class SkyLife {
 
 					if (!nameInUse && nameFieldEinf.getText() != "") {
 						if (comboBoxTyp.getSelectedItem().toString() == "Taube") {
-							Taube taube = new Taube(nameFieldEinf.getText(), (Integer) spinnerX.getValue(), (Integer) spinnerY.getValue());
+							Taube taube = new Taube(nameFieldEinf.getText(), (Integer) spinnerX.getValue(), (Integer) spinnerY.getValue(), 1);
 							ObjectList.add(taube);
 							// System.out.println(nameFieldEinf.getText());
 						} else if (comboBoxTyp.getSelectedItem().toString() == "Greifvogel") {
 							Greifvogel gv = new Greifvogel(nameFieldEinf
-									.getText(), (Integer) spinnerX.getValue(), (Integer) spinnerY.getValue());
+									.getText(), (Integer) spinnerX.getValue(), (Integer) spinnerY.getValue(), 2);
 							ObjectList.add(gv);
 							// System.out.println(nameFieldEinf.getText());
 						} else if (comboBoxTyp.getSelectedItem().toString() == "Flugzeug") {
-							Flugzeug fz = new Flugzeug(nameFieldEinf.getText(), (Integer) spinnerX.getValue(), (Integer) spinnerY.getValue());
+							Flugzeug fz = new Flugzeug(nameFieldEinf.getText(), (Integer) spinnerX.getValue(), (Integer) spinnerY.getValue(), 5);
 							ObjectList.add(fz);
 							// System.out.println(nameFieldEinf.getText());
 						} else {
 							Wolkenkratzer wk = new Wolkenkratzer(nameFieldEinf
-									.getText(), (Integer) spinnerX.getValue(), (Integer) spinnerY.getValue());
+									.getText(), (Integer) spinnerX.getValue(), (Integer) spinnerY.getValue(), 0);
 							ObjectList.add(wk);
 							// System.out.println(nameFieldEinf.getText());
 							// System.out.println(ObjectList.toString());

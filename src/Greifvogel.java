@@ -7,8 +7,8 @@ public class Greifvogel extends Flugobjekt{
 	int height = 20;
 
 
-	public Greifvogel(String name, int x, int y) {
-		super(name, x, y);
+	public Greifvogel(String name, int x, int y, int speed) {
+		super(name, x, y, speed);
 		form f = form.Kreis;
 
 	}

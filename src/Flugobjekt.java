@@ -1,8 +1,8 @@
 
 public class Flugobjekt extends Figur{
 	
-	public Flugobjekt(String name, int x, int y){
-		super(name, x, y);
+	public Flugobjekt(String name, int x, int y, int speed){
+		super(name, x, y, speed);
 	}
 
 	
