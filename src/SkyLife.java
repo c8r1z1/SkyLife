@@ -51,6 +51,8 @@ public class SkyLife {
 	
 	//Thread für Bewegung der Objekte und Neuzeichnen
 	static MovementThread tmov;
+	//Thread für Bewegung der Objekte und Neuzeichnen bei Änderung der Panelgröße
+	static MovementThread tmovPanel;
 	
 	//Thread für schrittweise Bewegung der Objekte
 	//static MovementStepbyStepThread tmovstep;
@@ -121,6 +123,8 @@ public class SkyLife {
 
 			public void actionPerformed(ActionEvent e) {
 				tmov = new MovementThread(window);
+				
+				//bei Veränderung der Panel-Größe liegt Objekt außerhalb, da window nur mit alten Werten übergeben wird
 				tmov.start();
 				btnNchsterSchritt.setEnabled(false);
 
@@ -138,6 +142,7 @@ public class SkyLife {
 			public void actionPerformed(ActionEvent e) {
 				//better possibility?
 				tmov.stop();
+				//tmovPanel.stop();
 				
 				//tmovstep.start();
 				btnNchsterSchritt.setEnabled(true);
@@ -367,6 +372,10 @@ public class SkyLife {
 				// panel.repaint();
 				System.out.println("PanelSize:    Höhe: " + PanelHeight
 						+ " Breite: " + PanelWidth);
+				tmov.stop();
+//				tmovPanel = new MovementThread(window);
+//				tmovPanel.start();
+				
 
 			}
 		});
