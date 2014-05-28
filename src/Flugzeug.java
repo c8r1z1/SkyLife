@@ -1,17 +1,12 @@
 
 
 
-public class Flugzeug extends Figur {
-
-	static double speed = 5;
-	int x, y;
-	int width = 100;
-	int height = 80;
+public class Flugzeug extends Flugobjekt {
 
 
-	public Flugzeug(String name, int x, int y) {
-		super(name, x, y);
-		form f = form.Rechteck;
+	public Flugzeug(String name, int x, int y, int speed, int height, int width) {
+		super(name, x, y, speed, height, width);
+		form f = form.Kreis;
 	}
 
 	public boolean collidesWith(Flugzeug flugzeug) {

@@ -1,14 +1,8 @@
 
 public class Greifvogel extends Flugobjekt{
-	static double speed = 2;
 
-	int x,y;
-	int width = 50;
-	int height = 20;
-
-
-	public Greifvogel(String name, int x, int y) {
-		super(name, x, y);
+	public Greifvogel(String name, int x, int y, int speed, int height, int width) {
+		super(name, x, y, speed, height, width);
 		form f = form.Kreis;
 
 	}

@@ -1,14 +1,8 @@
 
 public class Taube extends Flugobjekt{
-	static double speed = 1;
 
-	int x,y;
-	int width = 45;
-	int height = 30;
-
-
-	public Taube(String name, int x, int y) {
-		super(name, x, y);
+	public Taube(String name, int x, int y, int speed, int height, int width) {
+		super(name, x, y, speed, height, width);
 		form f = form.Kreis;
 	}
 

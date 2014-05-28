@@ -35,10 +35,10 @@ public class SkyLife {
 	private JTextPane txtInfo, txtpnKilledAnimals;
 
 	private JLayeredPane layeredPaneDelete;
-	private SkyLifePanel panel;
-	private int PanelHeight = 450;
-	private int PanelWidth = 900;
-
+	public SkyLifePanel panel;
+	public int PanelHeight = 450;
+	public int PanelWidth = 900;
+	
 	// Objekt Liste für Info-Anzeige unter dem Panel
 	public List<Figur> ObjectList = new ArrayList<Figur>();
 
@@ -46,12 +46,55 @@ public class SkyLife {
 	// Abschnitt bei Erhöhung)
 	public int killedAnimals = 0;
 	
+	//Liste für Entfernung von Objekten	
 	List<String> ListNameEinf = new ArrayList<String>();
+	
+	//Thread für Bewegung der Objekte und Neuzeichnen
+	static MovementThread tmov;
+	
+	//Thread für schrittweise Bewegung der Objekte
+	//static MovementStepbyStepThread tmovstep;
+	
+	static SkyLife window;
+	
+	//Koordinaten für Objekte
+	private int x = 0, y = 0;
+	
+	//Korrektur x-Koordinate bei Lage außerhalb des Panels
+	public void correctx(Figur f){
+		
+		if((Integer) spinnerX.getValue() >=0 && (Integer) spinnerX.getValue() <= (PanelWidth - f.width)){
+			x = (Integer) spinnerX.getValue();
+		}
+		else if((Integer) spinnerX.getValue() > (PanelWidth - f.width)){
+			x = (PanelWidth - f.width);
+		}
+		else if((Integer) spinnerX.getValue() < 0){
+			x = 0;
+		}
+		
+	}
+	
+	//Korrektur y-Koordinate bei Lage außerhalb des Panels
+	public void correcty(Figur f){
+		
+		if((Integer) spinnerY.getValue() >=0 && (Integer) spinnerY.getValue() <= (PanelHeight - f.height)){
+			y = (Integer) spinnerY.getValue();
+		}
+		else if((Integer) spinnerY.getValue() > (PanelHeight - f.height)){
+			y = (PanelHeight - f.height);
+		}
+		else if((Integer) spinnerY.getValue() < 0){
+			y = 0;
+		}
+		
+	}
 	
 
 	public static void main(String[] args) {
-		SkyLife window = new SkyLife();
+		window = new SkyLife();
 		window.frame.setVisible(true);
+
 	}
 
 	public SkyLife() {
@@ -73,14 +116,36 @@ public class SkyLife {
 		start = new JButton("Start");
 		start.setBounds(195, 50, 135, 25);
 		frame.getContentPane().add(start);
+		
+		start.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				tmov = new MovementThread(window);
+				tmov.start();
+				btnNchsterSchritt.setEnabled(false);
+
+			}
+		});
 
 		// Button zum Stoppen des Standes
 
 		stop = new JButton("Stop");
 		stop.setBounds(195, 90, 135, 25);
 		frame.getContentPane().add(stop);
+		
+		stop.addActionListener(new ActionListener() {
 
-		// Button zum Speicher des Standes
+			public void actionPerformed(ActionEvent e) {
+				//better possibility?
+				tmov.stop();
+				
+				//tmovstep.start();
+				btnNchsterSchritt.setEnabled(true);
+
+			}
+		});
+
+		// Button zum Speichern des Standes
 
 		speichern = new JButton("Speichern");
 		speichern.setBounds(35, 90, 135, 25);
@@ -92,6 +157,14 @@ public class SkyLife {
 		btnNchsterSchritt.setEnabled(false);
 		btnNchsterSchritt.setBounds(205, 137, 117, 29);
 		frame.getContentPane().add(btnNchsterSchritt);
+		
+//		btnNchsterSchritt.addActionListener(new ActionListener() {
+//
+//			public void actionPerformed(ActionEvent e) {
+//				notifyAll();
+//
+//			}
+//		});
 
 		// Neues Objekt einfuegen
 
@@ -155,11 +228,7 @@ public class SkyLife {
 		// Überarbeitung notwendig
 		String errormessage = null;
 
-		if ((int) spinnerX.getValue() > PanelWidth
-				|| (int) spinnerY.getValue() > PanelHeight) {
-			errormessage = "Objekt liegt nicht innerhalb der Anzeige!";
-		} else {
-			btnEinfgen.addActionListener(new ActionListener() {
+		btnEinfgen.addActionListener(new ActionListener() {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -174,25 +243,53 @@ public class SkyLife {
 					}
 
 					if (!nameInUse && nameFieldEinf.getText() != "") {
+						
 						if (comboBoxTyp.getSelectedItem().toString() == "Taube") {
-							Taube taube = new Taube(nameFieldEinf.getText(), (Integer) spinnerX.getValue(), (Integer) spinnerY.getValue());
+							
+							Taube iTaube = new Taube("iTaube", 0, 0, 1, 30, 45);							
+							//Korrektur x-Koordinate bei Lage außerhalb des Panels
+							correctx(iTaube);
+							//Korrektur y-Koordinate bei Lage außerhalb des Panels
+							correcty(iTaube);
+							
+							Taube taube = new Taube(nameFieldEinf.getText(), x, y, 1, 30, 45);
 							ObjectList.add(taube);
-							// System.out.println(nameFieldEinf.getText());
+
 						} else if (comboBoxTyp.getSelectedItem().toString() == "Greifvogel") {
+							
+							Greifvogel iGV = new Greifvogel("iGV", 0, 0, 2, 20, 50);							
+							//Korrektur x-Koordinate bei Lage außerhalb des Panels
+							correctx(iGV);
+							//Korrektur y-Koordinate bei Lage außerhalb des Panels
+							correcty(iGV);
+							
 							Greifvogel gv = new Greifvogel(nameFieldEinf
-									.getText(), (Integer) spinnerX.getValue(), (Integer) spinnerY.getValue());
+									.getText(), x, y, 2, 20, 50);
 							ObjectList.add(gv);
-							// System.out.println(nameFieldEinf.getText());
+
 						} else if (comboBoxTyp.getSelectedItem().toString() == "Flugzeug") {
-							Flugzeug fz = new Flugzeug(nameFieldEinf.getText(), (Integer) spinnerX.getValue(), (Integer) spinnerY.getValue());
+							
+							Flugzeug iFZ = new Flugzeug("iFZ", 0, 0, 5, 80, 100);							
+							//Korrektur x-Koordinate bei Lage außerhalb des Panels
+							correctx(iFZ);
+							//Korrektur y-Koordinate bei Lage außerhalb des Panels
+							correcty(iFZ);
+							
+							Flugzeug fz = new Flugzeug(nameFieldEinf.getText(), x, y, 5, 80, 100);
 							ObjectList.add(fz);
-							// System.out.println(nameFieldEinf.getText());
+
 						} else {
+							
+							Wolkenkratzer iWK = new Wolkenkratzer("iWK", 0, 0, 0, 325, 70);							
+							//Korrektur x-Koordinate bei Lage außerhalb des Panels
+							correctx(iWK);
+							//Korrektur y-Koordinate bei Lage außerhalb des Panels
+							y = PanelHeight - iWK.height;
+							
 							Wolkenkratzer wk = new Wolkenkratzer(nameFieldEinf
-									.getText(), (Integer) spinnerX.getValue(), (Integer) spinnerY.getValue());
+									.getText(), x, y, 0, 325, 70);
 							ObjectList.add(wk);
-							// System.out.println(nameFieldEinf.getText());
-							// System.out.println(ObjectList.toString());
+
 						}
 						frame.getContentPane().add(panel);
 						panel.repaint();
@@ -212,7 +309,6 @@ public class SkyLife {
 				}
 			});
 
-		}
 
 		// Panel-Größe einstellen
 
