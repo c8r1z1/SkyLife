@@ -11,13 +11,19 @@ public abstract class Figur implements Serializable {
 	public int x = 0, y = 0, speed = 0,
 	height = 0, width = 0;
 	
-	public Figur(String name, int x, int y, int speed, int height, int width){
+	public Figur(String name, int x, int y, int speed, int height, int width, String a){
 		this.name = name;
 		this.x = x;
 		this.y = y;
 		this.speed = speed;
 		this.height = height;
 		this.width = width;
+		if(a == "Kreis"){
+			form f = form.Kreis;
+		}
+		else if (a == "Rechteck"){
+			form f = form.Rechteck;
+		}
 		
 	}
 	

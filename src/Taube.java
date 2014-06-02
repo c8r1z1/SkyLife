@@ -1,9 +1,9 @@
 
 public class Taube extends Flugobjekt{
 
-	public Taube(String name, int x, int y, int speed, int height, int width) {
-		super(name, x, y, speed, height, width);
-		form f = form.Kreis;
+	public Taube(String name, int x, int y, int speed, int height, int width, String a) {
+		super(name, x, y, speed, height, width, a);
+		//form f = form.Kreis;
 	}
 
 }
