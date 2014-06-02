@@ -36,7 +36,7 @@ public class SkyLifePanel extends JPanel {
 		Image img;
 
 		if(app.comboBoxTyp.getSelectedItem().toString() == "Taube"){
-			img = taubeImg;
+			img = taubeImg;			
 		}
 		else if (app.comboBoxTyp.getSelectedItem().toString() == "Greifvogel"){
 			img = gvImg;

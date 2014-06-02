@@ -30,7 +30,7 @@ public class SkyLife {
 	JButton laden, speichern, start, stop, btnSetPanelSize, btnNchsterSchritt;
 	JComboBox<String> comboBoxTyp, comboBoxNameEnt;
 	JLabel lblNameEinf, lblNameEnt, lblHoehe, lblTyp, lblPosition, lblX, lblY,
-			lblHhe, lblBreite, lblPanelgre;
+			lblHhe, lblBreite, lblPanelgre, lblMessage, lblMessageTxt;
 	JTextField txtPanelWidthadd, txtPanelHeightadd;
 	private JTextPane txtInfo, txtpnKilledAnimals;
 
@@ -259,6 +259,8 @@ public class SkyLife {
 							
 							Taube taube = new Taube(nameFieldEinf.getText(), x, y, 1, 30, 45);
 							ObjectList.add(taube);
+							lblMessageTxt.setText("Taube hinzugefügt");
+							
 
 						} else if (comboBoxTyp.getSelectedItem().toString() == "Greifvogel") {
 							
@@ -460,10 +462,15 @@ public class SkyLife {
 		frame.getContentPane().add(txtpnKilledAnimals);
 
 		// Feld für Ausgabe von Fehlermeldungen
-		JLabel lblMessage = new JLabel("Message: " + errormessage);
+		lblMessage = new JLabel("Message:");
 		lblMessage.setForeground(Color.RED);
-		lblMessage.setBounds(6, 742, 595, 16);
+		lblMessage.setBounds(6, 742, 66, 16);
 		frame.getContentPane().add(lblMessage);
+		
+		lblMessageTxt = new JLabel("");
+		lblMessageTxt.setForeground(Color.RED);
+		lblMessageTxt.setBounds(72, 742, 727, 16);
+		frame.getContentPane().add(lblMessageTxt);
 
 	}
 }
