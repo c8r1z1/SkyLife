@@ -5,5 +5,10 @@ public class Taube extends Flugobjekt{
 		super(name, x, y, speed, height, width, a);
 		//form f = form.Kreis;
 	}
-
+	
+	@Override
+	public String toString(){
+		return "Taube " + name;
+		
+	}
 }

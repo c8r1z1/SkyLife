@@ -6,5 +6,11 @@ public class Greifvogel extends Flugobjekt{
 		//form f = form.Kreis;
 
 	}
+	
+	@Override
+	public String toString(){
+		return "Greifvogel " + name;
+		
+	}
 
 }

@@ -6,10 +6,10 @@ public class Wolkenkratzer extends Figur{
 		//form f = form.Rechteck;
 	}
 
-//	@Override
-//	public boolean collidesWith(Figur fig) {
-//		// TODO Auto-generated method stub
-//		return false;
-//	}
+	@Override
+	public String toString(){
+		return "Wolkenkratzer " + name;
+		
+	}
 
 }
