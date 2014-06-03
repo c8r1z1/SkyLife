@@ -27,6 +27,24 @@ public class SkyLifePanel extends JPanel {
 		}
 		
 	}
+	
+	public synchronized void Draw(Graphics g){
+		
+		for (Figur f : app.ObjectList) {
+			if (f instanceof Taube) {
+				g.drawImage(taubeImg, f.x, f.y, null);	
+			}
+			if(f instanceof Greifvogel) {
+				g.drawImage(gvImg, f.x, f.y, null);	
+			}
+			if(f instanceof Flugzeug) {
+				g.drawImage(fzImg, f.x, f.y, null);	
+			}
+			if(f instanceof Wolkenkratzer) {
+				g.drawImage(wkImg, f.x, f.y, null);	
+			}
+		}		
+	}
 
 	@Override
 	public void paintComponent(Graphics g) {
@@ -48,20 +66,7 @@ public class SkyLifePanel extends JPanel {
 			img = wkImg;
 		}
 		
-		for (Figur f : app.ObjectList) {
-			if (f instanceof Taube) {
-				g.drawImage(taubeImg, f.x, f.y, null);	
-			}
-			if(f instanceof Greifvogel) {
-				g.drawImage(gvImg, f.x, f.y, null);	
-			}
-			if(f instanceof Flugzeug) {
-				g.drawImage(fzImg, f.x, f.y, null);	
-			}
-			if(f instanceof Wolkenkratzer) {
-				g.drawImage(wkImg, f.x, f.y, null);	
-			}
-		}		
+		Draw(g);
 	}
 	
 }
