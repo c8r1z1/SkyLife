@@ -1,6 +1,8 @@
 
 public class MovementStepbyStepThread extends Thread{
 
+	boolean running = true;
+	
 	SkyLife app;
 
 	public MovementStepbyStepThread(SkyLife app){
@@ -11,7 +13,7 @@ public class MovementStepbyStepThread extends Thread{
 
 	public void run(){
 
-		while(true){
+		while(running){
 
 			for (Figur f : app.ObjectList){
 				

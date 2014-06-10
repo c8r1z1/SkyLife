@@ -18,7 +18,10 @@ import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
+
 public class SkyLife {
+
+	public enum FORM { Kreis, Rechteck };
 
 	JFrame frame;
 
@@ -30,9 +33,9 @@ public class SkyLife {
 	JButton laden, speichern, start, stop, btnSetPanelSize, btnNchsterSchritt;
 	JComboBox<String> comboBoxTyp, comboBoxNameEnt;
 	JLabel lblNameEinf, lblNameEnt, lblHoehe, lblTyp, lblPosition, lblX, lblY,
-	lblHhe, lblBreite, lblPanelgre, lblMessage, lblMessageTxt, lblKilledAnimalsCount;
+	lblHhe, lblBreite, lblPanelgre, lblMessage, lblMessageTxt;
 	JTextField txtPanelWidthadd, txtPanelHeightadd;
-	JTextPane txtInfo, txtpnKilledAnimals; 
+	JTextPane txtInfo, KilledAnimals;
 
 	private JLayeredPane layeredPaneDelete;
 	public SkyLifePanel panel;
@@ -40,15 +43,24 @@ public class SkyLife {
 	public int PanelWidth = 900;
 
 	//ToDo's
-	//1.Einfügen Objekterzeugung mit Kollisionsüberprüfung
-	//2.Chance auf Flugzeugabsturz durch Vögel
-	//3.Kollision um Kreis erweitern
+	//Chance auf Flugzeugabsturz durch Vögel
+	//Meteorit einbauen
+	//Stop von Thread per boolean running siehe project stop
+	//Verlagerung Konstruktorparameter in Klassen
 	//Schrittweises Ablaufen lauffähig machen
 	//Save and Load implementieren
 	//Button zum Starten des RMI Servers, Feld zur Eingabe von IP-Adresse, Button zum Verbinden zum Server + RMI Innenleben
 	//Remote Steueurung einbauen
-	//Meteorit einbauen
+
 	
+	//ToTest's
+	//Freigabe Button zur Änderung der PanelGröße -> wenn Objekte wegen Kollision gelöscht -> Button nicht freigegeben
+	//-> listener Thread auf ObjectList leer -> stoppen aller Threads & Freigabe Button
+	//Einfügen Objekterzeugung mit Kollisionsüberprüfung
+	//Kollision um Kreis erweitern
+	//Smooth für Bewegung über Zwischenzeichnung -> Veränderung über MovementThread Formel zur Berechnung von neuer Position
+	//-> eventuell Änderung Bewegungsabläufe generell
+
 
 	// Objekt Liste für alle Objekte innerhalb des Panels
 	public List<Figur> ObjectList = new ArrayList<Figur>();
@@ -88,9 +100,9 @@ public class SkyLife {
 
 			if (comboBoxTyp.getSelectedItem().toString() == "Taube") {
 
-				Taube taube = new Taube(nameFieldEinf.getText(), 0, 0, 1, 30, 45, "Rechteck");
+				Taube taube = new Taube(nameFieldEinf.getText(), 0, 0, 1, 30, 45, "Kreis");
 				ObjectList.add(taube);
-				CorrectPosition(taube);
+				CorrectPosition(taube, ObjectList);
 
 				//Text für Message
 				lblMessageTxt.setText(taube.toString() + " eingefügt");
@@ -100,7 +112,7 @@ public class SkyLife {
 
 				Greifvogel gv = new Greifvogel(nameFieldEinf.getText(), 0, 0, 2, 20, 50, "Rechteck");
 				ObjectList.add(gv);
-				CorrectPosition(gv);
+				CorrectPosition(gv, ObjectList);
 
 				//Text für Message
 				lblMessageTxt.setText(gv.toString() + " eingefügt");
@@ -109,7 +121,7 @@ public class SkyLife {
 
 				Flugzeug fz = new Flugzeug(nameFieldEinf.getText(), 0, 0, 3, 80, 100, "Rechteck");
 				ObjectList.add(fz);
-				CorrectPosition(fz);
+				CorrectPosition(fz, ObjectList);
 
 				//Text für Message
 				lblMessageTxt.setText(fz.toString() + " eingefügt");
@@ -157,29 +169,85 @@ public class SkyLife {
 		//Aktivierung Button für Neusetzen der Panelgröße und anhalten der Threads
 		if(ObjectList.size() == 0){
 			btnSetPanelSize.setEnabled(true);
-			tmov.stop();
-			tcol.stop();
-			trep.stop();
+			tmov.running = false;
+			tcol.running = false;
+			trep.running = false;
 		}
 	}
-
+	//Aktualisierung der Anzahl der Objekte
 	public void updateInfo(){
 		txtInfo.setText("Panelgröße:   Höhe: " + PanelHeight
 				+ " Breite: " + PanelWidth
 				+ "      Anzahl Objekte: " + ObjectList.size());
 
 	}
+	//Aktualisierung der Anzahl der getöteten Vögel
+	public void updateKilledAnimals(){
+		KilledAnimals.setText("Tote Vögel: " + killedAnimals);
+	}
 
 	//Kollisionsprüfung; Erweiterung um Kreise notwendig
 	public boolean collision(Figur a, Figur b){
-
-		if(a.x <= (b.x + b.width) && (a.x + a.width) >= b.x && a.y <= (b.y + b.height) && (a.y + a.height) >= b.y){
+		//Rechteck kollidiert mit Rechteck
+		if(a.f.toString() == "Rechteck" && b.f.toString() == "Rechteck"){
+			if(a.x <= (b.x + b.width) && (a.x + a.width) >= b.x && a.y <= (b.y + b.height) && (a.y + a.height) >= b.y){
+				return true;
+			}
+		}
+		//Kreis kollidiert mit Kreis
+		else if(a.f.toString() == "Kreis" && b.f.toString() == "Kreis"){
+			System.out.println("Kreiskollision");
+			if(pointdistanceCircle(a, b) <= ((a.x/2)+(b.x/2))){
+				return true;
+			}
+		}
+		//Kreis mit Rechteck
+		else if (a.f.toString() == "Rechteck" && b.f.toString() == "Kreis"){
+			if(CirclecolRectangle(a, b)){
+				return true;
+			}
+		}
+		else if (a.f.toString() == "Kreis" && b.f.toString() == "Rechteck"){
+			if(CirclecolRectangle(b, a)){
+				return true;
+			}
+		}
+			return false;
+	}
+	
+	//Methode Kollision Rechteck & Kreis
+	public boolean CirclecolRectangle(Figur a, Figur b){
+		if(b.middleX() <= (a.x + a.width) && b.middleX() >= a.x && b.middleY() >= a.y && b.middleY() <= (a.y + a.height)){
 			return true;
 		}
+		else if(pointDistanceRect(b, a.x, a.y) <= (b.x / 2) || pointDistanceRect(b, (a.x + a.width), a.y) <= (b.x / 2)
+				|| pointDistanceRect(b, (a.x + a.width), (a.y + a.height)) <= (b.x / 2) || pointDistanceRect(b, a.x, (a.y + a.height)) <= (b.x / 2)){
+			return true;
+		}
+		else if(b.middleX() >= a.x && b.middleX() <= (a.x + a.width) && b.middleY() <= a.y && b.middleY() >= (a.y + (b.y / 2))
+				|| b.middleX() >= a.x && b.middleX() <= (a.x + a.width) && b.middleY() >= (a.y + a.height) && b.middleY() <= (a.y + a.height + (b.y / 2))
+				|| b.middleY() >= a.y && b.middleY() <= (a.y + a.height) && b.middleX() <= a.x && b.middleX() >= (a.x - (b.x / 2))
+				|| b.middleY() >= a.y && b.middleY() <= (a.y + a.height) && b.middleX() >= (a.x + a.width) && b.middleX() <= (a.x + a.width + (b.x / 2))){
+			return true;
+		}
+		//Überprüfung
 		return false;
 	}
+	
+	//Abstand Kreis zu Kreis
+	public double pointdistanceCircle(Figur a, Figur b){
+		double distance = 0.0;
+		distance = Math.sqrt((Math.pow((a.middleX() - b.middleX()), 2) + Math.pow((a.middleY() - b.middleY()), 2)) * 1.0);
+		return distance;
+	}
+	//Abstand Kreis zu Punkt(Ecke vom Rechteck)
+	public double pointDistanceRect(Figur b, int x, int y){
+		double distance = 0.0;
+		distance = Math.sqrt((Math.pow((b.middleX() - x), 2) + Math.pow((b.middleY() - y), 2)) * 1.0);
+		return distance;
+	}
 
-	public void CorrectPosition(Figur f){
+	public void CorrectPosition(Figur f, List<Figur> ObjectList){
 		correctx(f);
 		correcty(f);
 		if(ObjectList.size() > 1){
@@ -187,6 +255,24 @@ public class SkyLife {
 				boolean collision = collision(f, ObjectList.get(i));
 				if(collision){
 					//Änderung der x und y Koordinaten zum Entgehen einer Kollision beim Einfügen
+					f.x = (ObjectList.get(i).x + ObjectList.get(i).width + 5);
+					if(f.x > (PanelWidth - f.width)){
+						correctxshift(f);
+						f.y = (ObjectList.get(i).y + ObjectList.get(i).height + 5);
+						if(f.y > (PanelHeight - f.height)){
+							correctyshift(f);
+							f.x = (ObjectList.get(i).x - f.width - 5);
+							if(f.x < 0){
+								correctxshift(f);
+								f.y = (ObjectList.get(i).y - f.height - 5);
+								if(f.y < 0){
+									lblMessageTxt.setText("Panel ist voll und Objekt kann nicht plaziert werden");
+								}
+							}
+							
+						}
+					}
+					
 				}
 			}
 		}
@@ -206,6 +292,15 @@ public class SkyLife {
 		}
 
 	}
+	
+	public void correctxshift(Figur f){
+		if(f.x > (PanelWidth - f.width)){
+			f.x = (PanelWidth - f.width);
+		}
+		else if(f.x < 0){
+			f.x = 0;
+		}
+	}
 
 	//Korrektur y-Koordinate bei Lage außerhalb des Panels
 	public void correcty(Figur f){
@@ -220,6 +315,15 @@ public class SkyLife {
 			f.y = 0;
 		}
 
+	}
+	
+	public void correctyshift(Figur f){
+		if(f.y > (PanelHeight - f.height)){
+			f.y = (PanelHeight - f.height);
+		}
+		else if(f.y < 0){
+			f.y = 0;
+		}
 	}
 
 	public void deleteObjectList(String name){
@@ -280,10 +384,13 @@ public class SkyLife {
 
 			public void actionPerformed(ActionEvent e) {
 				tmov = new MovementThread(window);
+				tmov.running = true;
 				tmov.start();
 				tcol = new CollisionThread(window);
+				tcol.running = true;
 				tcol.start();
 				trep = new RepaintThread(window);
+				trep.running = true;
 				trep.start();
 				btnNchsterSchritt.setEnabled(false);
 				lblMessageTxt.setText("Spiel gestartet");
@@ -300,9 +407,9 @@ public class SkyLife {
 
 			public void actionPerformed(ActionEvent e) {
 				//better possibility?
-				tmov.stop();
-				tcol.stop();
-				trep.stop();
+				tmov.running = false;
+				tcol.running = false;
+				trep.running = false;
 
 				//tmovstep.start();
 				btnNchsterSchritt.setEnabled(true);
@@ -446,9 +553,8 @@ public class SkyLife {
 				PanelWidth = Integer.parseInt(txtPanelWidthadd.getText());
 				panel.setBounds(40, 250, PanelWidth, PanelHeight);
 				txtInfo.setBounds(40, 250 + PanelHeight + 5, 450, 25);
+				KilledAnimals.setBounds(788, 250 + PanelHeight + 5, 133, 25);
 				updateInfo();
-				txtpnKilledAnimals.setBounds(798, 250 + PanelHeight + 5, 142,
-						25);
 			}
 		});
 
@@ -497,17 +603,12 @@ public class SkyLife {
 		txtInfo.setBounds(40, 250 + PanelHeight + 5, 450, 25);
 		frame.getContentPane().add(txtInfo);
 
-		txtpnKilledAnimals = new JTextPane();
-		txtpnKilledAnimals.setText("Tote Vögel: ");
-		txtpnKilledAnimals.setBackground(SystemColor.window);
-		txtpnKilledAnimals.setEditable(false);
-		txtpnKilledAnimals.setBounds(798, 705, 75, 25);
-		frame.getContentPane().add(txtpnKilledAnimals);
-
-		lblKilledAnimalsCount = new JLabel();
-		lblKilledAnimalsCount.setText(" " + killedAnimals);
-		lblKilledAnimalsCount.setBounds(872, 705, 49, 16);
-		frame.getContentPane().add(lblKilledAnimalsCount);
+		KilledAnimals = new JTextPane();
+		KilledAnimals.setText("Tote Vögel: " + killedAnimals);
+		KilledAnimals.setBackground(SystemColor.window);
+		KilledAnimals.setEditable(false);
+		KilledAnimals.setBounds(788, 250 + PanelHeight + 5, 133, 25);
+		frame.getContentPane().add(KilledAnimals);
 
 		// Feld für Ausgabe von Fehlermeldungen
 		lblMessage = new JLabel("Message:");

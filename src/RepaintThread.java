@@ -1,5 +1,7 @@
 
 public class RepaintThread extends Thread{
+	
+	boolean running = true;
 
 	SkyLife app;
 
@@ -8,7 +10,7 @@ public class RepaintThread extends Thread{
 	}
 
 	public void run(){
-		while(true){
+		while(running){
 			app.panel.repaint();
 			
 			try {

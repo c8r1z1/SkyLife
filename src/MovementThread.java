@@ -1,6 +1,8 @@
 
 public class MovementThread extends Thread {
 	
+	boolean running = true;
+	
 	SkyLife app;
 	double mrx = Math.random();
 	int counterX = 0;
@@ -80,11 +82,11 @@ public class MovementThread extends Thread {
 
 			if(f instanceof Flugobjekt){
 				
-				f.x = (int) (f.x + f.speed * MathRandomX() * Math.random() * 20 - MathRandomX2() * Math.random() * f.speed * 20 );
+				f.x = (int) (f.x + f.speed * MathRandomX() * Math.random() * 10 - MathRandomX2() * Math.random() * f.speed * 10 );
 				//Korrektur x-Koordinate bei Lage außerhalb des Panels
 				CorrectXMovement(f);
 				
-				f.y = (int) (f.y + f.speed * MathRandomY() * Math.random() * 20 - MathRandomY2() * Math.random() * f.speed * 20 );
+				f.y = (int) (f.y + f.speed * MathRandomY() * Math.random() * 10 - MathRandomY2() * Math.random() * f.speed * 10 );
 				//Korrektur y-Koordinate bei Lage außerhalb des Panels
 				CorrectYMovement(f);				
 			}
@@ -93,7 +95,7 @@ public class MovementThread extends Thread {
 
 	public void run(){
 
-		while(true){
+		while(running){
 			
 			//Aufruf Movement Methode
 			Movement();
