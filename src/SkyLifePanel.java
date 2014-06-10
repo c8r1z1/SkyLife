@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.io.File;
@@ -32,6 +33,8 @@ public class SkyLifePanel extends JPanel {
 		
 		for (Figur f : app.ObjectList) {
 			if (f instanceof Taube) {
+				g.setColor(Color.red);
+				g.drawOval(f.x + 5, f.y, 30, 30);
 				g.drawImage(taubeImg, f.x, f.y, null);	
 			}
 			if(f instanceof Greifvogel) {

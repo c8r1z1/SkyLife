@@ -1,6 +1,8 @@
 
 public class CollisionThread extends Thread {
 
+	boolean running = true;
+
 	SkyLife app;
 	boolean collision = false;
 	int deletedObjects = 0;
@@ -41,7 +43,7 @@ public class CollisionThread extends Thread {
 	}
 
 	public synchronized void Collision(){
-		
+
 		//Zurücksetzen für neuen Schleifendurchlauf
 		deletedObjects = 0;
 
@@ -99,7 +101,7 @@ public class CollisionThread extends Thread {
 		cleanList();
 
 	}
-	
+
 	public void cleanList(){
 		deletedObjectscleanList = 0;
 		for(int i = 0; i < app.ObjectList.size() - deletedObjectscleanList; i++){
@@ -146,19 +148,12 @@ public class CollisionThread extends Thread {
 	public void DeleteObjectCollision(int i){
 		if(isAnimal(i)){
 			app.killedAnimals++;
-			app.lblKilledAnimalsCount.setText(" " + app.killedAnimals);			
+			app.updateKilledAnimals();			
 		}
 		app.deleteObjectList(app.ObjectList.get(i).name);
 		app.ObjectList.set(i, null);
 		deletedObjects++;
 		app.updateInfo();
-		//Aktivierung des Buttons zum Setzen der Panelgröße, wenn keine Objekte im Panel
-		if(app.ObjectList.size() == 0){
-			app.btnSetPanelSize.setEnabled(true);
-			app.tmov.stop();
-			app.tcol.stop();
-			app.trep.stop();
-		}
 	}
 
 	//Game Over da Kollateralschaden entstanden
@@ -166,19 +161,29 @@ public class CollisionThread extends Thread {
 		DeleteObjectCollision(i);
 		DeleteObjectCollision(j);		
 		app.lblMessageTxt.setText("Game Over");
-		app.tmov.stop();
-		app.tcol.stop();
-		app.trep.stop();
+		//Löschen aller verbleibenden Objekte in der Liste
+		for(int k = 0; k < app.ObjectList.size(); k++){
+			DeleteObjectCollision(k);			
+		}
+		cleanList();
+		//funktioniert nicht -> Auslagerung in anderern Thread
+		//Aktivierung des Buttons zum Setzen der Panelgröße, wenn keine Objekte im Panel
+		if(app.ObjectList.size() == 0){
+			app.btnSetPanelSize.setEnabled(true);
+			app.tmov.running = false;
+			app.trep.running = false;
+			app.tcol.running = false;
+		}
 	}
 
 	public void run(){
-		while(true){
+		while(running){
 
 			//Aufruf Collision Methode
 			Collision();
 
 			try {
-				sleep(10);
+				sleep(1);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

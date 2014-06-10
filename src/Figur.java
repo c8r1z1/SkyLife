@@ -6,10 +6,11 @@ import java.util.List;
 
 public abstract class Figur implements Serializable {
 	
-	public enum form { Kreis, Rechteck }
+	public enum FORM { Kreis, Rechteck };
 	public String name;
 	public int x = 0, y = 0, speed = 0,
 	height = 0, width = 0;
+	FORM f;
 	
 	public Figur(String name, int x, int y, int speed, int height, int width, String a){
 		this.name = name;
@@ -19,10 +20,10 @@ public abstract class Figur implements Serializable {
 		this.height = height;
 		this.width = width;
 		if(a == "Kreis"){
-			form f = form.Kreis;
+			f = FORM.Kreis;
 		}
 		else if (a == "Rechteck"){
-			form f = form.Rechteck;
+			f = FORM.Rechteck;
 		}
 		
 	}
@@ -31,5 +32,16 @@ public abstract class Figur implements Serializable {
 		return "Name: " + name + " Speed: " + speed + " Koordianten (x/y): " + x + "/" + y + " Höhe x Breite: " + height + " x " + width;
 	}
 	
-	//public abstract boolean collidesWith(Figur fig); 
+	//Bestimmung x-Koordinate Mittelpunkt
+	public double middleX(){
+		double X = 0.0;
+		X = (x + x / 2) * 1.0;
+		return X;
+	}
+	//Bestimmung y-Koordinate Mittelpunkt
+	public double middleY(){
+		double Y = 0.0;
+		Y = (y + y / 2) * 1.0;
+		return Y;
+	}
 }
