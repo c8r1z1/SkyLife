@@ -1,9 +1,11 @@
 
 public class Greifvogel extends Flugobjekt{
+	
+	static int x = 0, y = 0, height = 20, width = 50, speed = 2;
+	static String a = "Rechteck";
 
-	public Greifvogel(String name, int x, int y, int speed, int height, int width, String a) {
+	public Greifvogel(String name) {
 		super(name, x, y, speed, height, width, a);
-		//form f = form.Kreis;
 
 	}
 	
