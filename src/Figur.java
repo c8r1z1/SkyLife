@@ -29,7 +29,7 @@ public abstract class Figur implements Serializable {
 	}
 	
 	public String toString(){
-		return "Name: " + name + " Speed: " + speed + " Koordianten (x/y): " + x + "/" + y + " Höhe x Breite: " + height + " x " + width;
+		return name;
 	}
 	
 	//Bestimmung x-Koordinate Mittelpunkt

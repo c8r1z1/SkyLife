@@ -15,6 +15,7 @@ public class SkyLifePanel extends JPanel {
 	Image gvImg = null;
 	Image fzImg = null;
 	Image wkImg = null;
+	Image mImg = null;
 
 	public SkyLifePanel(SkyLife app) {
 		this.app = app;
@@ -23,6 +24,7 @@ public class SkyLifePanel extends JPanel {
 			gvImg = ImageIO.read(new File("img/greifvogel.png"));
 			fzImg = ImageIO.read(new File("img/flugzeug.png"));
 			wkImg = ImageIO.read(new File("img/wolkenkratzer.png"));
+			mImg = ImageIO.read(new File("img/meteorit.jpg"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -46,6 +48,9 @@ public class SkyLifePanel extends JPanel {
 			if(f instanceof Wolkenkratzer) {
 				g.drawImage(wkImg, f.x, f.y, null);	
 			}
+			if (f instanceof Meteorit){
+				g.drawImage(mImg, f.x, (f.y - 44), null);
+			}
 		}		
 	}
 
@@ -65,8 +70,11 @@ public class SkyLifePanel extends JPanel {
 		else if (app.comboBoxTyp.getSelectedItem().toString() == "Flugzeug"){
 			img = fzImg;
 		}
-		else{
+		else if (app.comboBoxTyp.getSelectedItem().toString() == "Wolkenkratzer") {
 			img = wkImg;
+		}
+		else{
+			img = mImg;
 		}
 		
 		Draw(g);

@@ -64,44 +64,59 @@ public class CollisionThread extends Thread {
 					}
 					if(app.ObjectList.get(i) instanceof Wolkenkratzer && app.ObjectList.get(j) instanceof Flugzeug){
 						//Game Over da Kollateralschaden entstanden
-						GameOver(i, j);
+						GameOver("Flugzeug in Wolkenkratzer gecrasht");
 					}
 					if (app.ObjectList.get(i) instanceof Wolkenkratzer && isAnimal(j) == true){
 						DeleteObjectCollision(j);
 					}
 					if(app.ObjectList.get(i) instanceof Flugzeug && app.ObjectList.get(j) instanceof Wolkenkratzer){
 						//Game Over da Kollateralschaden entstanden
-						GameOver(i, j);
+						GameOver("Flugzeug in Wolkenkratzer gecrasht");
 					}
 					if(app.ObjectList.get(i) instanceof Flugzeug && app.ObjectList.get(j) instanceof Flugzeug){
 						//Game Over da Kollateralschaden entstanden
-						GameOver(i, j);
+						GameOver("Flugzeug in anderes Flugzeug gecrasht");
 					}
 					if (app.ObjectList.get(i) instanceof Flugzeug && isAnimal(j) == true){
+						if(Math.random() * 10 > 9.9){
+							GameOver("Flugzeugabsturz durch Vogel in der Turbine");
+						}
+						else{
 						DeleteObjectCollision(j);
+						}
 					}
-					if(app.ObjectList.get(i) instanceof Greifvogel && (app.ObjectList.get(j) instanceof Wolkenkratzer || app.ObjectList.get(j) instanceof Flugzeug)){
+					if (app.ObjectList.get(j) instanceof Flugzeug && isAnimal(i) == true){
+						if(Math.random() * 10 > 9.9){
+							GameOver("Flugzeugabsturz durch Vogel in der Turbine");
+						}
+						else{
+						DeleteObjectCollision(i);
+						}
+					}
+					if(app.ObjectList.get(i) instanceof Greifvogel && app.ObjectList.get(j) instanceof Wolkenkratzer){
 						DeleteObjectCollision(i);
 					}
-					else if(app.ObjectList.get(i) instanceof Greifvogel && app.ObjectList.get(j) instanceof Taube){
+					if(app.ObjectList.get(i) instanceof Greifvogel && app.ObjectList.get(j) instanceof Taube){
 						DeleteObjectCollision(j);
 					}
-					else if(app.ObjectList.get(i) instanceof Taube && (app.ObjectList.get(j) instanceof Greifvogel || app.ObjectList.get(j) instanceof Flugzeug ||app.ObjectList.get(j) instanceof Wolkenkratzer)){
+					if(app.ObjectList.get(i) instanceof Taube && (app.ObjectList.get(j) instanceof Greifvogel ||app.ObjectList.get(j) instanceof Wolkenkratzer)){
 						DeleteObjectCollision(i);
 					}
 					//Ausweichmanöver bei 2 Objekten gleichen Typs
-					else if(app.ObjectList.get(i) instanceof Greifvogel && app.ObjectList.get(j) instanceof Greifvogel || app.ObjectList.get(i) instanceof Taube && app.ObjectList.get(j) instanceof Taube){
+					if(app.ObjectList.get(i) instanceof Greifvogel && app.ObjectList.get(j) instanceof Greifvogel || app.ObjectList.get(i) instanceof Taube && app.ObjectList.get(j) instanceof Taube){
 						dodge(i, j);
 					}
+					cleanList();
 				}
 			}
 
 		}
-		//Aufräumen der Liste, da "null" Objekte angelegt werden
-		cleanList();
+		//testweise Verschiebung in if Abfragen
+		//cleanList();
+		app.updateInfo();
 
 	}
-
+	//Aufräumen der Liste, da "null" Objekte angelegt werden
 	public void cleanList(){
 		deletedObjectscleanList = 0;
 		for(int i = 0; i < app.ObjectList.size() - deletedObjectscleanList; i++){
@@ -114,6 +129,7 @@ public class CollisionThread extends Thread {
 
 	//Ausweichmanöver + Überprüfung auf Verlassen des Panels
 	public void dodge(int i, int j){
+		app.lblMessageTxt.setText("Ausweichmanöver: " + app.ObjectList.get(i).toString() + " kollidiert mit " + app.ObjectList.get(j).toString());
 		//Seitverschiebung
 		if(app.ObjectList.get(i).y <= (app.ObjectList.get(j).y + app.ObjectList.get(j).height) || app.ObjectList.get(j).y <= (app.ObjectList.get(i).y + app.ObjectList.get(i).height)){
 			if(app.ObjectList.get(j).x < ((app.ObjectList.get(i).x + app.ObjectList.get(i).width) / 2)){
@@ -148,32 +164,46 @@ public class CollisionThread extends Thread {
 	public void DeleteObjectCollision(int i){
 		if(isAnimal(i)){
 			app.killedAnimals++;
-			app.updateKilledAnimals();			
+			app.updateKilledAnimals();
+			meteoritProof();
 		}
 		app.deleteObjectList(app.ObjectList.get(i).name);
 		app.ObjectList.set(i, null);
 		deletedObjects++;
-		app.updateInfo();
+	}
+
+	//Bei 10 oder mehr getöteten Vögeln, rächt sich die Natur
+	public void meteoritProof() {
+		if(app.killedAnimals >= 1){
+			Meteorit meteor = new Meteorit("Destroyer", app.PanelWidth);
+			app.ObjectList.add(meteor);
+			//Zerstörung aller Objekte auf dem Weg
+			//Einschlag: GameOver
+		}
+		
+	}
+
+	//Löschung verbelibende Objekte bei Game Over
+	public void DeleteObjectCollisionAll(){
+		app.ObjectList.clear();
+		app.comboBoxNameEnt.removeAllItems();
+		app.panel.repaint();
 	}
 
 	//Game Over da Kollateralschaden entstanden
-	public void GameOver(int i, int j){
-		DeleteObjectCollision(i);
-		DeleteObjectCollision(j);		
-		app.lblMessageTxt.setText("Game Over");
+	public void GameOver(String a){		
+		app.lblMessageTxt.setText("Game Over: " + a);
 		//Löschen aller verbleibenden Objekte in der Liste
-		for(int k = 0; k < app.ObjectList.size(); k++){
-			DeleteObjectCollision(k);			
-		}
-		cleanList();
-		//funktioniert nicht -> Auslagerung in anderern Thread
+		DeleteObjectCollisionAll();
 		//Aktivierung des Buttons zum Setzen der Panelgröße, wenn keine Objekte im Panel
-		if(app.ObjectList.size() == 0){
-			app.btnSetPanelSize.setEnabled(true);
-			app.tmov.running = false;
-			app.trep.running = false;
-			app.tcol.running = false;
-		}
+		app.btnSetPanelSize.setEnabled(true);
+		app.stop.setEnabled(false);
+		app.updateInfo();
+		app.killedAnimals = 0;
+		app.updateKilledAnimals();
+		app.tmov.running = false;
+		app.trep.running = false;
+		app.tcol.running = false;
 	}
 
 	public void run(){
@@ -183,7 +213,7 @@ public class CollisionThread extends Thread {
 			Collision();
 
 			try {
-				sleep(1);
+				sleep(20);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

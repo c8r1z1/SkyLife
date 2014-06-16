@@ -41,23 +41,19 @@ public class SkyLife {
 	public SkyLifePanel panel;
 	public int PanelHeight = 450;
 	public int PanelWidth = 900;
+	private int startclicked = 0;
 
 	//ToDo's
-	//Chance auf Flugzeugabsturz durch Vögel
 	//Meteorit einbauen
-	//Stop von Thread per boolean running siehe project stop
-	//Verlagerung Konstruktorparameter in Klassen
+	//Auslagerung Ausweichmanöver und Kollisionsüberprüfung Erzeugung
 	//Schrittweises Ablaufen lauffähig machen
 	//Save and Load implementieren
 	//Button zum Starten des RMI Servers, Feld zur Eingabe von IP-Adresse, Button zum Verbinden zum Server + RMI Innenleben
 	//Remote Steueurung einbauen
 
-	
+
 	//ToTest's
-	//Freigabe Button zur Änderung der PanelGröße -> wenn Objekte wegen Kollision gelöscht -> Button nicht freigegeben
-	//-> listener Thread auf ObjectList leer -> stoppen aller Threads & Freigabe Button
 	//Einfügen Objekterzeugung mit Kollisionsüberprüfung
-	//Kollision um Kreis erweitern
 	//Smooth für Bewegung über Zwischenzeichnung -> Veränderung über MovementThread Formel zur Berechnung von neuer Position
 	//-> eventuell Änderung Bewegungsabläufe generell
 
@@ -71,6 +67,9 @@ public class SkyLife {
 	//Liste für Entfernung von Objekten	
 	List<String> ListNameEinf = new ArrayList<String>();
 
+
+	static SkyLife window;
+
 	//Thread für Bewegung der Objekte
 	static MovementThread tmov;
 	//Thread für Kollisionsüberprüfung
@@ -78,19 +77,22 @@ public class SkyLife {
 	//Thread für Neuzeichnung des Panels
 	static RepaintThread trep;
 
+
 	//Thread für schrittweise Bewegung der Objekte
 	//static MovementStepbyStepThread tmovstep;
 
-	static SkyLife window;
+
 
 	public synchronized void createObject(){
 
 		boolean nameInUse = false;
-		for (int i = 0; i < ObjectList.size(); i++) {
-			String name = ObjectList.get(i).name;
-			if (nameFieldEinf.getText().equals(name)) {
-				nameInUse = true;
-				break;
+		if(ObjectList.size() != 0){
+			for (int i = 0; i < ObjectList.size(); i++) {
+				String name = ObjectList.get(i).name;
+				if (nameFieldEinf.getText().equals(name)) {
+					nameInUse = true;
+					break;
+				}
 			}
 		}
 
@@ -100,7 +102,7 @@ public class SkyLife {
 
 			if (comboBoxTyp.getSelectedItem().toString() == "Taube") {
 
-				Taube taube = new Taube(nameFieldEinf.getText(), 0, 0, 1, 30, 45, "Kreis");
+				Taube taube = new Taube(nameFieldEinf.getText());
 				ObjectList.add(taube);
 				CorrectPosition(taube, ObjectList);
 
@@ -110,7 +112,7 @@ public class SkyLife {
 
 			} else if (comboBoxTyp.getSelectedItem().toString() == "Greifvogel") {
 
-				Greifvogel gv = new Greifvogel(nameFieldEinf.getText(), 0, 0, 2, 20, 50, "Rechteck");
+				Greifvogel gv = new Greifvogel(nameFieldEinf.getText());
 				ObjectList.add(gv);
 				CorrectPosition(gv, ObjectList);
 
@@ -119,7 +121,7 @@ public class SkyLife {
 
 			} else if (comboBoxTyp.getSelectedItem().toString() == "Flugzeug") {
 
-				Flugzeug fz = new Flugzeug(nameFieldEinf.getText(), 0, 0, 3, 80, 100, "Rechteck");
+				Flugzeug fz = new Flugzeug(nameFieldEinf.getText());
 				ObjectList.add(fz);
 				CorrectPosition(fz, ObjectList);
 
@@ -128,7 +130,7 @@ public class SkyLife {
 
 			} else {
 
-				Wolkenkratzer wk = new Wolkenkratzer(nameFieldEinf.getText(), 0, 0, 0, 325, 70, "Rechteck");
+				Wolkenkratzer wk = new Wolkenkratzer(nameFieldEinf.getText());
 				ObjectList.add(wk);
 				correctx(wk);
 				wk.y = PanelHeight - wk.height;
@@ -161,14 +163,17 @@ public class SkyLife {
 
 		for (int i = 0; i < ObjectList.size(); i++){
 			if(ObjectList.get(i).name.equalsIgnoreCase((String) comboBoxNameEnt.getSelectedItem())){
-				ObjectList.remove(i);
+				lblMessageTxt.setText(ObjectList.remove(i).toString() + " entfernt");
+
 				System.out.println(ObjectList.toString());
 				break;
 			}
 		}
+		panel.repaint();
 		//Aktivierung Button für Neusetzen der Panelgröße und anhalten der Threads
 		if(ObjectList.size() == 0){
 			btnSetPanelSize.setEnabled(true);
+			stop.setEnabled(false);
 			tmov.running = false;
 			tcol.running = false;
 			trep.running = false;
@@ -212,9 +217,12 @@ public class SkyLife {
 				return true;
 			}
 		}
-			return false;
+		if(ObjectList.size() == 0){
+			btnSetPanelSize.setEnabled(true);
+		}
+		return false;
 	}
-	
+
 	//Methode Kollision Rechteck & Kreis
 	public boolean CirclecolRectangle(Figur a, Figur b){
 		if(b.middleX() <= (a.x + a.width) && b.middleX() >= a.x && b.middleY() >= a.y && b.middleY() <= (a.y + a.height)){
@@ -233,7 +241,7 @@ public class SkyLife {
 		//Überprüfung
 		return false;
 	}
-	
+
 	//Abstand Kreis zu Kreis
 	public double pointdistanceCircle(Figur a, Figur b){
 		double distance = 0.0;
@@ -269,10 +277,10 @@ public class SkyLife {
 									lblMessageTxt.setText("Panel ist voll und Objekt kann nicht plaziert werden");
 								}
 							}
-							
+
 						}
 					}
-					
+
 				}
 			}
 		}
@@ -292,7 +300,7 @@ public class SkyLife {
 		}
 
 	}
-	
+
 	public void correctxshift(Figur f){
 		if(f.x > (PanelWidth - f.width)){
 			f.x = (PanelWidth - f.width);
@@ -316,7 +324,7 @@ public class SkyLife {
 		}
 
 	}
-	
+
 	public void correctyshift(Figur f){
 		if(f.y > (PanelHeight - f.height)){
 			f.y = (PanelHeight - f.height);
@@ -351,6 +359,9 @@ public class SkyLife {
 	public static void main(String[] args) {
 		window = new SkyLife();
 		window.frame.setVisible(true);
+		tmov = new MovementThread(window);
+		tcol = new CollisionThread(window);
+		trep = new RepaintThread(window);
 
 	}
 
@@ -383,17 +394,24 @@ public class SkyLife {
 		start.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				tmov = new MovementThread(window);
-				tmov.running = true;
-				tmov.start();
-				tcol = new CollisionThread(window);
-				tcol.running = true;
-				tcol.start();
-				trep = new RepaintThread(window);
-				trep.running = true;
-				trep.start();
+
+				if(startclicked == 0){
+					tmov.start();
+					tcol.start();
+					trep.start();
+				}
+				else{
+					tmov = new MovementThread(window);
+					tcol = new CollisionThread(window);
+					trep = new RepaintThread(window);
+					tmov.start();
+					tcol.start();
+					trep.start();
+				}
 				btnNchsterSchritt.setEnabled(false);
+				stop.setEnabled(true);
 				lblMessageTxt.setText("Spiel gestartet");
+				startclicked++;
 			}
 		});
 
@@ -401,18 +419,19 @@ public class SkyLife {
 
 		stop = new JButton("Stop");
 		stop.setBounds(195, 90, 135, 25);
+		stop.setEnabled(false);
 		frame.getContentPane().add(stop);
 
 		stop.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				//better possibility?
 				tmov.running = false;
 				tcol.running = false;
 				trep.running = false;
 
 				//tmovstep.start();
 				btnNchsterSchritt.setEnabled(true);
+				stop.setEnabled(false);
 
 				lblMessageTxt.setText("Spiel gestoppt");
 
