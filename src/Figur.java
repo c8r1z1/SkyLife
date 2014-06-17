@@ -35,13 +35,13 @@ public abstract class Figur implements Serializable {
 	//Bestimmung x-Koordinate Mittelpunkt
 	public double middleX(){
 		double X = 0.0;
-		X = (x + x / 2) * 1.0;
+		X = (this.x + this.x / 2) * 1.0;
 		return X;
 	}
 	//Bestimmung y-Koordinate Mittelpunkt
 	public double middleY(){
 		double Y = 0.0;
-		Y = (y + y / 2) * 1.0;
+		Y = (this.y + this.y / 2) * 1.0;
 		return Y;
 	}
 }

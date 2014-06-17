@@ -23,9 +23,11 @@ public class MovementThread extends Thread {
 
 		if(f.x < 0){
 			f.x = 0;
+			changeDirectionX();
 		}
 		if((f.x + f.width) > app.PanelWidth){
 			f.x = (app.PanelWidth - f.width);
+			changeDirectionX();
 		}
 
 	}
@@ -34,14 +36,25 @@ public class MovementThread extends Thread {
 
 		if(f.y < 0){
 			f.y = 0;
+			changeDirectionY();
 		}
 		if((f.y + f.height) > app.PanelHeight){
 			f.y = (app.PanelHeight - f.height);
+			changeDirectionY();
 		}
+	}
+	//Führt zur Neuausrichtung der Bewegung bei Kontakt mit dem Panelrand
+	public void changeDirectionY() {
+		counterY = 200;
+		counterY2 = 200;
+	}
+	public void changeDirectionX() {
+		counterX = 200;
+		counterX2 = 200;
 	}
 
 	public double MathRandomX(){
-		if(counterX >= 50){
+		if(counterX >= 150){
 			mrx = Math.random();
 			counterX = 0;
 		}
@@ -50,7 +63,7 @@ public class MovementThread extends Thread {
 	}
 
 	public double MathRandomX2(){
-		if(counterX2 >= 50){
+		if(counterX2 >= 150){
 			mrx2 = Math.random();
 			counterX2 = 0;
 		}
@@ -59,7 +72,7 @@ public class MovementThread extends Thread {
 	}
 
 	public double MathRandomY(){
-		if(counterY >= 50){
+		if(counterY >= 150){
 			mry = Math.random();
 			counterY = 0;
 		}
@@ -68,7 +81,7 @@ public class MovementThread extends Thread {
 	}
 
 	public double MathRandomY2(){
-		if(counterY2 >= 50){
+		if(counterY2 >= 150){
 			mry2 = Math.random();
 			counterY2 = 0;
 		}
@@ -76,30 +89,31 @@ public class MovementThread extends Thread {
 		return mry2;
 	}
 
-	public synchronized void Movement(){
+	public void Movement(){
 
-		for (Figur f : app.ObjectList){
+		synchronized (app.ObjectList) {
+			for (Figur f : app.ObjectList){
 
-			if(f instanceof Flugobjekt){
-				f.x = (int) (f.x + f.speed * (MathRandomX() - MathRandomX2()) * 3 );
-				//Korrektur x-Koordinate bei Lage außerhalb des Panels
-				CorrectXMovement(f);
+				if(f instanceof Flugobjekt){
+					f.x = (int) (f.x + f.speed * (MathRandomX() - MathRandomX2()) * 2 + 1);
+					//Korrektur x-Koordinate bei Lage außerhalb des Panels
+					CorrectXMovement(f);
 
-				f.y = (int) (f.y + f.speed * (MathRandomY() - MathRandomY2()) * 3);
-				//Korrektur y-Koordinate bei Lage außerhalb des Panels
-				CorrectYMovement(f);				
-			}
-			if(f instanceof Meteorit){
-				f.y += 10;
-				CorrectYMovement(f);
-				if(f.y >= app.PanelHeight - f.height){
-					GameOver("Meteoriteneinschlag, die Natur übt Rache für tote Vögel");
+					f.y = (int) (f.y + f.speed * (MathRandomY() - MathRandomY2()) * 2 + 1);
+					//Korrektur y-Koordinate bei Lage außerhalb des Panels
+					CorrectYMovement(f);				
 				}
-			}
-		}
+				if(f instanceof Meteorit){
+					f.y += 10;
+					CorrectYMovement(f);
+					if(f.y >= app.PanelHeight - f.height){
+						GameOver("Meteoriteneinschlag, die Natur übt Rache für tote Vögel");
+					}
+				}
+			}}
 	}
-	
-	
+
+
 	//Löschung verbelibende Objekte bei Game Over
 	public void DeleteObjectCollisionAll(){
 		app.ObjectList.clear();
@@ -125,20 +139,20 @@ public class MovementThread extends Thread {
 
 	public void run(){
 
-			while(running){
+		while(running){
 
-				//Aufruf Movement Methode
-				Movement();
+			//Aufruf Movement Methode
+			Movement();
 
-				try {
-					sleep(250);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-
+			try {
+				sleep(20);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
+
+
+		}
 	}
 
 }
