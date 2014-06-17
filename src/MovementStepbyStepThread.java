@@ -2,7 +2,7 @@
 public class MovementStepbyStepThread extends Thread{
 
 	boolean running = true;
-	
+
 	SkyLife app;
 
 	public MovementStepbyStepThread(SkyLife app){
@@ -11,14 +11,12 @@ public class MovementStepbyStepThread extends Thread{
 
 	}
 
-	public void run(){
-
-		while(running){
-
+	public void StepbyStep(){
+		synchronized (app.ObjectList){
 			for (Figur f : app.ObjectList){
-				
+
 				System.out.println("StepbyStep-Modus gestartet");
-				
+
 				try {
 					wait();
 				} catch (InterruptedException e) {
@@ -35,9 +33,15 @@ public class MovementStepbyStepThread extends Thread{
 					app.panel.repaint();
 
 				}
-
 			}
+		}
+	}
 
+	public void run(){
+
+		while(running){
+			
+			StepbyStep();
 
 		}
 	}

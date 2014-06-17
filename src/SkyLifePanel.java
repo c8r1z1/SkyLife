@@ -28,37 +28,38 @@ public class SkyLifePanel extends JPanel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
-	public synchronized void Draw(Graphics g){
-		
-		for (Figur f : app.ObjectList) {
-			if (f instanceof Taube) {
-				g.setColor(Color.red);
-				g.drawOval(f.x + 5, f.y, 30, 30);
-				g.drawImage(taubeImg, f.x, f.y, null);	
-			}
-			if(f instanceof Greifvogel) {
-				g.drawImage(gvImg, f.x, f.y, null);	
-			}
-			if(f instanceof Flugzeug) {
-				g.drawImage(fzImg, f.x, f.y, null);	
-			}
-			if(f instanceof Wolkenkratzer) {
-				g.drawImage(wkImg, f.x, f.y, null);	
-			}
-			if (f instanceof Meteorit){
-				g.drawImage(mImg, f.x, (f.y - 44), null);
-			}
-		}		
+
+	public void Draw(Graphics g){
+		synchronized (app.ObjectList){
+			for (Figur f : app.ObjectList) {
+				if (f instanceof Taube) {
+					g.setColor(Color.red);
+					g.drawOval(f.x + 5, f.y, 30, 30);
+					g.drawImage(taubeImg, f.x, f.y, null);	
+				}
+				if(f instanceof Greifvogel) {
+					g.drawImage(gvImg, f.x, f.y, null);	
+				}
+				if(f instanceof Flugzeug) {
+					g.drawImage(fzImg, f.x, f.y, null);	
+				}
+				if(f instanceof Wolkenkratzer) {
+					g.drawImage(wkImg, f.x, f.y, null);	
+				}
+				if (f instanceof Meteorit){
+					g.drawImage(mImg, f.x, (f.y - 44), null);
+				}
+			}	
+		}
 	}
 
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
-		
+
 		Image img;
 
 		if(app.comboBoxTyp.getSelectedItem().toString() == "Taube"){
@@ -76,8 +77,8 @@ public class SkyLifePanel extends JPanel {
 		else{
 			img = mImg;
 		}
-		
+
 		Draw(g);
 	}
-	
+
 }

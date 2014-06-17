@@ -44,7 +44,7 @@ public class SkyLife {
 	private int startclicked = 0;
 
 	//ToDo's
-	//Meteorit einbauen
+	//Meteoriten Kollision einbauen
 	//Auslagerung Ausweichmanöver und Kollisionsüberprüfung Erzeugung
 	//Schrittweises Ablaufen lauffähig machen
 	//Save and Load implementieren
@@ -83,102 +83,105 @@ public class SkyLife {
 
 
 
-	public synchronized void createObject(){
+	public void createObject(){
+		synchronized (ObjectList){
+			boolean nameInUse = false;
+			if(ObjectList.size() != 0){
+				for (int i = 0; i < ObjectList.size(); i++) {
+					String name = ObjectList.get(i).name;
+					if (nameFieldEinf.getText().equals(name)) {
+						nameInUse = true;
+						break;
+					}
+				}
+			}
 
-		boolean nameInUse = false;
-		if(ObjectList.size() != 0){
-			for (int i = 0; i < ObjectList.size(); i++) {
-				String name = ObjectList.get(i).name;
-				if (nameFieldEinf.getText().equals(name)) {
-					nameInUse = true;
+			if (!nameInUse && nameFieldEinf.getText() != "") {
+
+				//Überprüfung: Objekte dürfen nicht aufeinander eingefügt werden!!!
+
+				if (comboBoxTyp.getSelectedItem().toString() == "Taube") {
+
+					Taube taube = new Taube(nameFieldEinf.getText());
+					ObjectList.add(taube);
+					CorrectPosition(taube, ObjectList);
+
+					//Text für Message
+					lblMessageTxt.setText(taube.toString() + " eingefügt");
+
+
+				} else if (comboBoxTyp.getSelectedItem().toString() == "Greifvogel") {
+
+					Greifvogel gv = new Greifvogel(nameFieldEinf.getText());
+					ObjectList.add(gv);
+					CorrectPosition(gv, ObjectList);
+
+					//Text für Message
+					lblMessageTxt.setText(gv.toString() + " eingefügt");
+
+				} else if (comboBoxTyp.getSelectedItem().toString() == "Flugzeug") {
+
+					Flugzeug fz = new Flugzeug(nameFieldEinf.getText());
+					ObjectList.add(fz);
+					CorrectPosition(fz, ObjectList);
+
+					//Text für Message
+					lblMessageTxt.setText(fz.toString() + " eingefügt");
+
+				} else {
+
+					Wolkenkratzer wk = new Wolkenkratzer(nameFieldEinf.getText());
+					ObjectList.add(wk);
+					correctx(wk);
+					wk.y = PanelHeight - wk.height;
+
+					//Text für Message
+					lblMessageTxt.setText(wk.toString() + " eingefügt");
+
+				}
+				frame.getContentPane().add(panel);
+				panel.repaint();
+
+				//Hinzufügen zur Liste für Entfernung
+				ListNameEinf.add(nameFieldEinf.getText());
+				comboBoxNameEnt.addItem(nameFieldEinf.getText());
+
+				//Aktualisierung Info unterhalb des Panels
+				updateInfo();
+
+			} else {
+				lblMessageTxt.setText("Kein gültiger Name eingefügt! ");
+			}
+
+			//Deaktivierung Button für Neusetzen der Panelgröße, sobald Objekt enthalten
+			if(ObjectList.size() != 0){
+				btnSetPanelSize.setEnabled(false);
+			}
+		}
+	}
+
+	public void deleteObject(){
+		synchronized (ObjectList){
+			for (int i = 0; i < ObjectList.size(); i++){
+				if(ObjectList.get(i).name.equalsIgnoreCase((String) comboBoxNameEnt.getSelectedItem())){
+					lblMessageTxt.setText(ObjectList.remove(i).toString() + " entfernt");
+
+					System.out.println(ObjectList.toString());
 					break;
 				}
 			}
-		}
-
-		if (!nameInUse && nameFieldEinf.getText() != "") {
-
-			//Überprüfung: Objekte dürfen nicht aufeinander eingefügt werden!!!
-
-			if (comboBoxTyp.getSelectedItem().toString() == "Taube") {
-
-				Taube taube = new Taube(nameFieldEinf.getText());
-				ObjectList.add(taube);
-				CorrectPosition(taube, ObjectList);
-
-				//Text für Message
-				lblMessageTxt.setText(taube.toString() + " eingefügt");
-
-
-			} else if (comboBoxTyp.getSelectedItem().toString() == "Greifvogel") {
-
-				Greifvogel gv = new Greifvogel(nameFieldEinf.getText());
-				ObjectList.add(gv);
-				CorrectPosition(gv, ObjectList);
-
-				//Text für Message
-				lblMessageTxt.setText(gv.toString() + " eingefügt");
-
-			} else if (comboBoxTyp.getSelectedItem().toString() == "Flugzeug") {
-
-				Flugzeug fz = new Flugzeug(nameFieldEinf.getText());
-				ObjectList.add(fz);
-				CorrectPosition(fz, ObjectList);
-
-				//Text für Message
-				lblMessageTxt.setText(fz.toString() + " eingefügt");
-
-			} else {
-
-				Wolkenkratzer wk = new Wolkenkratzer(nameFieldEinf.getText());
-				ObjectList.add(wk);
-				correctx(wk);
-				wk.y = PanelHeight - wk.height;
-
-				//Text für Message
-				lblMessageTxt.setText(wk.toString() + " eingefügt");
-
-			}
-			frame.getContentPane().add(panel);
 			panel.repaint();
-
-			//Hinzufügen zur Liste für Entfernung
-			ListNameEinf.add(nameFieldEinf.getText());
-			comboBoxNameEnt.addItem(nameFieldEinf.getText());
-
-			//Aktualisierung Info unterhalb des Panels
-			updateInfo();
-
-		} else {
-			lblMessageTxt.setText("Kein gültiger Name eingefügt! ");
-		}
-
-		//Deaktivierung Button für Neusetzen der Panelgröße, sobald Objekt enthalten
-		if(ObjectList.size() != 0){
-			btnSetPanelSize.setEnabled(false);
-		}
-	}
-
-	public synchronized void deleteObject(){
-
-		for (int i = 0; i < ObjectList.size(); i++){
-			if(ObjectList.get(i).name.equalsIgnoreCase((String) comboBoxNameEnt.getSelectedItem())){
-				lblMessageTxt.setText(ObjectList.remove(i).toString() + " entfernt");
-
-				System.out.println(ObjectList.toString());
-				break;
+			//Aktivierung Button für Neusetzen der Panelgröße und anhalten der Threads
+			if(ObjectList.size() == 0){
+				btnSetPanelSize.setEnabled(true);
+				stop.setEnabled(false);
+				tmov.running = false;
+				tcol.running = false;
+				trep.running = false;
 			}
 		}
-		panel.repaint();
-		//Aktivierung Button für Neusetzen der Panelgröße und anhalten der Threads
-		if(ObjectList.size() == 0){
-			btnSetPanelSize.setEnabled(true);
-			stop.setEnabled(false);
-			tmov.running = false;
-			tcol.running = false;
-			trep.running = false;
-		}
 	}
+
 	//Aktualisierung der Anzahl der Objekte
 	public void updateInfo(){
 		txtInfo.setText("Panelgröße:   Höhe: " + PanelHeight

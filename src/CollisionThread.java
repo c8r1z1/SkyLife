@@ -42,79 +42,83 @@ public class CollisionThread extends Thread {
 		return false;
 	}
 
-	public synchronized void Collision(){
+	public void Collision(){
 
-		//Zurücksetzen für neuen Schleifendurchlauf
-		deletedObjects = 0;
+		synchronized (app.ObjectList){
 
-		for (int i = 0; i < (app.ObjectList.size() - 1 - this.deletedObjects); i++){
+			if(app.ObjectList.size() > 1){
+				//Zurücksetzen für neuen Schleifendurchlauf
+				deletedObjects = 0;
 
-			for(int j = 1; j < (app.ObjectList.size() - this.deletedObjects); j++){
+				for (int i = 0; i < (app.ObjectList.size() - 1 - this.deletedObjects); i++){
 
-				collision = app.collision(app.ObjectList.get(i), app.ObjectList.get(j));
-				if(app.ObjectList.get(i).equals(app.ObjectList.get(j))){
-					collision = false;
+					for(int j = 1; j < (app.ObjectList.size() - this.deletedObjects); j++){
+
+						collision = app.collision(app.ObjectList.get(i), app.ObjectList.get(j));
+						if(app.ObjectList.get(i).equals(app.ObjectList.get(j))){
+							collision = false;
+						}
+
+						if(collision){
+
+							if(app.ObjectList.get(i).getClass().equals(app.ObjectList.get(j).getClass()) == false){
+								//Ausgabe Message: Objekt a kollidiert mit Objekt b
+								app.lblMessageTxt.setText(app.ObjectList.get(i).toString() + " " + " kollidiert mit " + app.ObjectList.get(j).toString());
+							}
+							if(app.ObjectList.get(i) instanceof Wolkenkratzer && app.ObjectList.get(j) instanceof Flugzeug){
+								//Game Over da Kollateralschaden entstanden
+								GameOver("Flugzeug in Wolkenkratzer gecrasht");
+							}
+							if (app.ObjectList.get(i) instanceof Wolkenkratzer && isAnimal(j) == true){
+								DeleteObjectCollision(j, i);
+							}
+							if(app.ObjectList.get(i) instanceof Flugzeug && app.ObjectList.get(j) instanceof Wolkenkratzer){
+								//Game Over da Kollateralschaden entstanden
+								GameOver("Flugzeug in Wolkenkratzer gecrasht");
+							}
+							if(app.ObjectList.get(i) instanceof Flugzeug && app.ObjectList.get(j) instanceof Flugzeug){
+								//Game Over da Kollateralschaden entstanden
+								GameOver("Flugzeug in anderes Flugzeug gecrasht");
+							}
+							if (app.ObjectList.get(i) instanceof Flugzeug && isAnimal(j) == true){
+								if(Math.random() * 10 > 9.9){
+									GameOver("Flugzeugabsturz durch Vogel in der Turbine");
+								}
+								else{
+									DeleteObjectCollision(j, i);
+								}
+							}
+							if (app.ObjectList.get(j) instanceof Flugzeug && isAnimal(i) == true){
+								if(Math.random() * 10 > 9.9){
+									GameOver("Flugzeugabsturz durch Vogel in der Turbine");
+								}
+								else{
+									DeleteObjectCollision(i, j);
+								}
+							}
+							if(app.ObjectList.get(i) instanceof Greifvogel && app.ObjectList.get(j) instanceof Wolkenkratzer){
+								DeleteObjectCollision(i, j);
+							}
+							if(app.ObjectList.get(i) instanceof Greifvogel && app.ObjectList.get(j) instanceof Taube){
+								DeleteObjectCollision(j, i);
+							}
+							if(app.ObjectList.get(i) instanceof Taube && (app.ObjectList.get(j) instanceof Greifvogel ||app.ObjectList.get(j) instanceof Wolkenkratzer)){
+								DeleteObjectCollision(i, j);
+							}
+							//Ausweichmanöver bei 2 Objekten gleichen Typs
+							if(app.ObjectList.get(i) instanceof Greifvogel && app.ObjectList.get(j) instanceof Greifvogel || app.ObjectList.get(i) instanceof Taube && app.ObjectList.get(j) instanceof Taube){
+								dodge(i, j);
+							}
+							cleanList();
+						}
+					}
+
 				}
-
-				if(collision){
-
-					if(app.ObjectList.get(i).getClass().equals(app.ObjectList.get(j).getClass()) == false){
-						//Ausgabe Message: Objekt a kollidiert mit Objekt b
-						app.lblMessageTxt.setText(app.ObjectList.get(i).toString() + " " + " kollidiert mit " + app.ObjectList.get(j).toString());
-					}
-					if(app.ObjectList.get(i) instanceof Wolkenkratzer && app.ObjectList.get(j) instanceof Flugzeug){
-						//Game Over da Kollateralschaden entstanden
-						GameOver("Flugzeug in Wolkenkratzer gecrasht");
-					}
-					if (app.ObjectList.get(i) instanceof Wolkenkratzer && isAnimal(j) == true){
-						DeleteObjectCollision(j);
-					}
-					if(app.ObjectList.get(i) instanceof Flugzeug && app.ObjectList.get(j) instanceof Wolkenkratzer){
-						//Game Over da Kollateralschaden entstanden
-						GameOver("Flugzeug in Wolkenkratzer gecrasht");
-					}
-					if(app.ObjectList.get(i) instanceof Flugzeug && app.ObjectList.get(j) instanceof Flugzeug){
-						//Game Over da Kollateralschaden entstanden
-						GameOver("Flugzeug in anderes Flugzeug gecrasht");
-					}
-					if (app.ObjectList.get(i) instanceof Flugzeug && isAnimal(j) == true){
-						if(Math.random() * 10 > 9.9){
-							GameOver("Flugzeugabsturz durch Vogel in der Turbine");
-						}
-						else{
-						DeleteObjectCollision(j);
-						}
-					}
-					if (app.ObjectList.get(j) instanceof Flugzeug && isAnimal(i) == true){
-						if(Math.random() * 10 > 9.9){
-							GameOver("Flugzeugabsturz durch Vogel in der Turbine");
-						}
-						else{
-						DeleteObjectCollision(i);
-						}
-					}
-					if(app.ObjectList.get(i) instanceof Greifvogel && app.ObjectList.get(j) instanceof Wolkenkratzer){
-						DeleteObjectCollision(i);
-					}
-					if(app.ObjectList.get(i) instanceof Greifvogel && app.ObjectList.get(j) instanceof Taube){
-						DeleteObjectCollision(j);
-					}
-					if(app.ObjectList.get(i) instanceof Taube && (app.ObjectList.get(j) instanceof Greifvogel ||app.ObjectList.get(j) instanceof Wolkenkratzer)){
-						DeleteObjectCollision(i);
-					}
-					//Ausweichmanöver bei 2 Objekten gleichen Typs
-					if(app.ObjectList.get(i) instanceof Greifvogel && app.ObjectList.get(j) instanceof Greifvogel || app.ObjectList.get(i) instanceof Taube && app.ObjectList.get(j) instanceof Taube){
-						dodge(i, j);
-					}
-					cleanList();
-				}
+				//testweise Verschiebung in if Abfragen
+				//cleanList();
+				app.updateInfo();
 			}
-
 		}
-		//testweise Verschiebung in if Abfragen
-		//cleanList();
-		app.updateInfo();
-
 	}
 	//Aufräumen der Liste, da "null" Objekte angelegt werden
 	public void cleanList(){
@@ -161,8 +165,8 @@ public class CollisionThread extends Thread {
 	}
 
 	//Löschung eines Objektes nach Kollision
-	public void DeleteObjectCollision(int i){
-		if(isAnimal(i)){
+	public void DeleteObjectCollision(int i, int j){
+		if(isAnimal(i) && !isAnimal(j)){
 			app.killedAnimals++;
 			app.updateKilledAnimals();
 			meteoritProof();
@@ -180,7 +184,7 @@ public class CollisionThread extends Thread {
 			//Zerstörung aller Objekte auf dem Weg
 			//Einschlag: GameOver
 		}
-		
+
 	}
 
 	//Löschung verbelibende Objekte bei Game Over
