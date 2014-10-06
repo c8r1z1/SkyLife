@@ -132,9 +132,9 @@ public class MovementThread extends Thread {
 		app.updateInfo();
 		app.killedAnimals = 0;
 		app.updateKilledAnimals();
-		app.tmov.running = false;
-		app.trep.running = false;
-		app.tcol.running = false;
+		SkyLife.tmov.running = false;
+		SkyLife.trep.running = false;
+		SkyLife.tcol.running = false;
 	}
 
 	public void run(){
@@ -147,7 +147,6 @@ public class MovementThread extends Thread {
 			try {
 				sleep(20);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 

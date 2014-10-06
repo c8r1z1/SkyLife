@@ -9,6 +9,11 @@ import javax.swing.JPanel;
 
 public class SkyLifePanel extends JPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	SkyLife app;
 
 	Image taubeImg = null;
@@ -60,6 +65,7 @@ public class SkyLifePanel extends JPanel {
 		super.paintComponent(g);
 
 
+		@SuppressWarnings("unused")
 		Image img;
 
 		if(app.comboBoxTyp.getSelectedItem().toString() == "Taube"){

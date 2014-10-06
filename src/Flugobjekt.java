@@ -1,14 +1,14 @@
 
 public class Flugobjekt extends Figur{
 	
-	public Flugobjekt(String name, int x, int y, int speed, int height, int width, String a){
-		super(name, x, y, speed, height, width, a);
-	}
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-	
-	public boolean collidesWith(Flugzeug flugzeug) {
-		// TODO Auto-generated method stub
-		return false;
+
+	public Flugobjekt(String name, int x, int y, int speed, int height, int width, String a, String Typ){
+		super(Typ, name, x, y, speed, height, width, a);
 	}
 
 }
