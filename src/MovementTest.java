@@ -1,11 +1,12 @@
-// MÃ¶glchkeit fÃ¼r neue Bewegung
-// Taube und Greifvogel vor, zurÃ¼ck, diagonal.. bei BerÃ¼hrung des Rahmens, zurÃ¼ckprallen, einfallswinkel gleich ausfalls winkel
-// Flugzeug von rechts nach links.. bei BerÃ¼hrung des Rahmens.. eintritt auf andere Seite
+
+// Möglchkeit für neue Bewegung
+// Taube und Greifvogel vor, zurück, diagonal.. bei Berührung des Rahmens, zurückprallen, einfallswinkel gleich ausfalls winkel
+// Flugzeug von rechts nach links.. bei Berührung des Rahmens.. eintritt auf andere Seite
 // Wolkenkratzer bewegen sich nicht
 // Meteor senkrechter eintritt in mitte des panels
 
 
-public class MovementThread extends Thread {
+public class MovementTest extends Thread {
 
 	boolean running = true;
 
@@ -19,7 +20,7 @@ public class MovementThread extends Thread {
 	double mry2 = Math.random();
 	int counterY2 = 0;
 
-	public MovementThread(SkyLife app){
+	public MovementTest(SkyLife app){
 
 		this.app = app;
 
@@ -49,7 +50,7 @@ public class MovementThread extends Thread {
 			changeDirectionY();
 		}
 	}
-	//FÃ¼hrt zur Neuausrichtung der Bewegung bei Kontakt mit dem Panelrand
+	//Führt zur Neuausrichtung der Bewegung bei Kontakt mit dem Panelrand
 	public void changeDirectionY() {
 		counterY = 200;
 		counterY2 = 200;
@@ -96,31 +97,59 @@ public class MovementThread extends Thread {
 	}
 
 	public void Movement(){
-
-		synchronized (app.ObjectList) {
+		synchronized (app.ObjectList){
 			for (Figur f : app.ObjectList){
 
-				if(f instanceof Flugobjekt){
+				if(f instanceof Taube || f instanceof Greifvogel){
 					f.x = (int) (f.x + f.speed * (MathRandomX() - MathRandomX2()) * 2 + 1);
-					//Korrektur x-Koordinate bei Lage auÃŸerhalb des Panels
+					//Korrektur x-Koordinate bei Lage außerhalb des Panels
 					CorrectXMovement(f);
 
 					f.y = (int) (f.y + f.speed * (MathRandomY() - MathRandomY2()) * 2 + 1);
-					//Korrektur y-Koordinate bei Lage auÃŸerhalb des Panels
+					//Korrektur y-Koordinate bei Lage außerhalb des Panels
 					CorrectYMovement(f);				
 				}
+				if(f instanceof Flugzeug){
+					f.x = f.x - f.speed;
+					f.x = correctXFlugzeug(f.x);
+					f.y = f.y - f.speed/2;
+					f.y = correctYFlugzeug(f.y);
+					if(f.y == -666){
+						app.ObjectList.remove(app.ObjectList.indexOf(f));
+					}
+				}
+				
 				if(f instanceof Meteorit){
 					f.y += 10;
 					CorrectYMovement(f);
 					if(f.y >= app.PanelHeight - f.height){
-						GameOver("Meteoriteneinschlag, die Natur Ã¼bt Rache fÃ¼r tote VÃ¶gel");
+						GameOver("Meteoriteneinschlag, die Natur übt Rache für tote Vögel");
 					}
 				}
-			}}
+			}
+		}
+	}
+	
+	//Korrektur Flugzeug.. links raus, rechts wieder rein
+	public int correctXFlugzeug(int x){
+		if((x + 100) < 0){
+			x = app.PanelWidth;
+		}
+		return x;
+	}
+	
+	// wenn Flugzeug oben aus dem Panel rausgeht soll es komplett verschwinden.
+	// aus Objectliste, comboBoxEnt löschen
+	public int correctYFlugzeug(int y){
+		if((y + 80) < 0){
+			y = -666;
+		}
+		
+		return y;
 	}
 
 
-	//LÃ¶schung verbelibende Objekte bei Game Over
+	//Löschung verbliebende Objekte bei Game Over
 	public void DeleteObjectCollisionAll(){
 		app.ObjectList.clear();
 		app.comboBoxNameEnt.removeAllItems();
@@ -130,9 +159,9 @@ public class MovementThread extends Thread {
 	//Game Over da Kollateralschaden entstanden
 	public void GameOver(String a){		
 		app.lblMessageTxt.setText("Game Over: " + a);
-		//LÃ¶schen aller verbleibenden Objekte in der Liste
+		//Löschen aller verbleibenden Objekte in der Liste
 		DeleteObjectCollisionAll();
-		//Aktivierung des Buttons zum Setzen der PanelgrÃ¶ÃŸe, wenn keine Objekte im Panel
+		//Aktivierung des Buttons zum Setzen der Panelgröße, wenn keine Objekte im Panel
 		app.btnSetPanelSize.setEnabled(true);
 		app.stop.setEnabled(false);
 		app.updateInfo();
@@ -146,11 +175,11 @@ public class MovementThread extends Thread {
 	public void run(){
 
 		while(running){
-
+						
 			//Aufruf Movement Methode
 			Movement();
 
-			try {
+			try{
 				sleep(20);
 			} catch (InterruptedException e) {
 				e.printStackTrace();

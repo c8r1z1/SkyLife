@@ -21,4 +21,6 @@ public class Taube extends Flugobjekt{
 	public String toString() {
 		return Typ + " " + name + " " + x + " " + y + " " + speed + " " + height + " " + width  + " " + f ;
 	}
+	
+	
 }

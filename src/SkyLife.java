@@ -87,6 +87,8 @@ public class SkyLife {
 
 	// Thread für Bewegung der Objekte
 	static MovementThread tmov;
+	// MovementTestthread
+	static MovementTest tmovtest;
 	// Thread für Kollisionsüberprüfung
 	static CollisionThread tcol;
 	// Thread für Neuzeichnung des Panels
@@ -121,7 +123,6 @@ public class SkyLife {
 					Taube taube = new Taube(nameFieldEinf.getText(), (Integer) spinnerX.getValue(), (Integer) spinnerY.getValue());
 					ObjectList.add(taube);
 					CorrectPosition(taube, ObjectList);
-					System.out.println(ObjectList);
 					// Text für Message
 					lblMessageTxt.setText(Taube.Typ + " " + taube.name + " eingefügt");
 
@@ -237,7 +238,8 @@ public class SkyLife {
 			if (ObjectList.size() == 0) {
 				btnSetPanelSize.setEnabled(true);
 				stop.setEnabled(false);
-				tmov.running = false;
+//				tmov.running = false;
+				tmovtest.running = false;
 				tcol.running = false;
 				trep.running = false;
 			}
@@ -428,7 +430,9 @@ public class SkyLife {
 	public static void main(String[] args) {
 		window = new SkyLife();
 		window.frame.setVisible(true);
-		tmov = new MovementThread(window);
+//		tmov = new MovementThread(window);
+		
+		tmovtest = new MovementTest(window);
 		tcol = new CollisionThread(window);
 		trep = new RepaintThread(window);
 
@@ -452,7 +456,8 @@ public class SkyLife {
 
 			public void actionPerformed(ActionEvent e) {
 				// GUI stoppen
-				tmov.running = false;
+//				tmov.running = false;
+				tmovtest.running = false;
 				tcol.running = false;
 				trep.running = false;
 
@@ -524,14 +529,18 @@ public class SkyLife {
 			public void actionPerformed(ActionEvent e) {
 
 				if (startclicked == 0) {
-					tmov.start();
+//					tmov.start();
+					tmovtest.start();
+					System.out.println(ObjectList);
 					tcol.start();
 					trep.start();
 				} else {
-					tmov = new MovementThread(window);
+//					tmov = new MovementThread(window);
+					tmovtest = new MovementTest(window);
 					tcol = new CollisionThread(window);
 					trep = new RepaintThread(window);
-					tmov.start();
+//					tmov.start();
+					tmovtest.start();
 					tcol.start();
 					trep.start();
 				}
@@ -552,7 +561,8 @@ public class SkyLife {
 		stop.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				tmov.running = false;
+//				tmov.running = false;
+				tmovtest.running = false;
 				tcol.running = false;
 				trep.running = false;
 

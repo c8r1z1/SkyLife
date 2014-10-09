@@ -65,24 +65,24 @@ public class SkyLifePanel extends JPanel {
 		super.paintComponent(g);
 
 
-		@SuppressWarnings("unused")
-		Image img;
-
-		if(app.comboBoxTyp.getSelectedItem().toString() == "Taube"){
-			img = taubeImg;			
-		}
-		else if (app.comboBoxTyp.getSelectedItem().toString() == "Greifvogel"){
-			img = gvImg;
-		}
-		else if (app.comboBoxTyp.getSelectedItem().toString() == "Flugzeug"){
-			img = fzImg;
-		}
-		else if (app.comboBoxTyp.getSelectedItem().toString() == "Wolkenkratzer") {
-			img = wkImg;
-		}
-		else{
-			img = mImg;
-		}
+//		@SuppressWarnings("unused")
+//		Image img;
+//
+//		if(app.comboBoxTyp.getSelectedItem().toString() == "Taube"){
+//			img = taubeImg;			
+//		}
+//		else if (app.comboBoxTyp.getSelectedItem().toString() == "Greifvogel"){
+//			img = gvImg;
+//		}
+//		else if (app.comboBoxTyp.getSelectedItem().toString() == "Flugzeug"){
+//			img = fzImg;
+//		}
+//		else if (app.comboBoxTyp.getSelectedItem().toString() == "Wolkenkratzer") {
+//			img = wkImg;
+//		}
+//		else{
+//			img = mImg;
+//		}
 
 		Draw(g);
 	}

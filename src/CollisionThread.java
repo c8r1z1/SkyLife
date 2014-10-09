@@ -63,7 +63,7 @@ public class CollisionThread extends Thread {
 
 							if(app.ObjectList.get(i).getClass().equals(app.ObjectList.get(j).getClass()) == false){
 								//Ausgabe Message: Objekt a kollidiert mit Objekt b
-								app.lblMessageTxt.setText(app.ObjectList.get(i).toString() + " " + " kollidiert mit " + app.ObjectList.get(j).toString());
+								app.lblMessageTxt.setText(app.ObjectList.get(i).Typ + " " + app.ObjectList.get(i).name + " kollidiert mit " + app.ObjectList.get(j).Typ + " " + app.ObjectList.get(j).name);
 							}
 							if(app.ObjectList.get(i) instanceof Wolkenkratzer && app.ObjectList.get(j) instanceof Flugzeug){
 								//Game Over da Kollateralschaden entstanden
@@ -133,7 +133,7 @@ public class CollisionThread extends Thread {
 
 	//Ausweichmanöver + Überprüfung auf Verlassen des Panels
 	public void dodge(int i, int j){
-		app.lblMessageTxt.setText("Ausweichmanöver: " + app.ObjectList.get(i).toString() + " kollidiert mit " + app.ObjectList.get(j).toString());
+		app.lblMessageTxt.setText("Ausweichmanöver: " + app.ObjectList.get(i).Typ + " " + app.ObjectList.get(i).name + " kollidiert mit " + app.ObjectList.get(j).Typ + " " + app.ObjectList.get(j).name);
 		//Seitverschiebung
 		if(app.ObjectList.get(i).y <= (app.ObjectList.get(j).y + app.ObjectList.get(j).height) || app.ObjectList.get(j).y <= (app.ObjectList.get(i).y + app.ObjectList.get(i).height)){
 			if(app.ObjectList.get(j).x < ((app.ObjectList.get(i).x + app.ObjectList.get(i).width) / 2)){
@@ -178,7 +178,7 @@ public class CollisionThread extends Thread {
 
 	//Bei 10 oder mehr getöteten Vögeln, rächt sich die Natur
 	public void meteoritProof() {
-		if(app.killedAnimals >= 1){
+		if(app.killedAnimals >= 10){
 			Meteorit meteor = new Meteorit("Destroyer", app.PanelWidth);
 			app.ObjectList.add(meteor);
 			//Zerstörung aller Objekte auf dem Weg
