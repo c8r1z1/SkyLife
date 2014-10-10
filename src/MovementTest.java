@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 
 // Möglchkeit für neue Bewegung
 // Taube und Greifvogel vor, zurück, diagonal.. bei Berührung des Rahmens, zurückprallen, einfallswinkel gleich ausfalls winkel
@@ -7,148 +10,150 @@
 
 
 public class MovementTest extends Thread {
-
-	boolean running = true;
-
+	
 	SkyLife app;
-	double mrx = Math.random();
-	int counterX = 0;
-	double mrx2 = Math.random();
-	int counterX2 = 0;
-	double mry = Math.random();
-	int counterY = 0;
-	double mry2 = Math.random();
-	int counterY2 = 0;
+	boolean running = true;
+	List<Figur> RemoveListFlug = new ArrayList<Figur>();
+	int countFlug = 0;
+	int countTaube = 0;
+
+	
 
 	public MovementTest(SkyLife app){
-
 		this.app = app;
-
 	}
 
-	public void CorrectXMovement(Figur f){
 
-		if(f.x < 0){
-			f.x = 0;
-			changeDirectionX();
-		}
-		if((f.x + f.width) > app.PanelWidth){
-			f.x = (app.PanelWidth - f.width);
-			changeDirectionX();
-		}
 
-	}
 
-	public void CorrectYMovement(Figur f){
-
-		if(f.y < 0){
-			f.y = 0;
-			changeDirectionY();
-		}
-		if((f.y + f.height) > app.PanelHeight){
-			f.y = (app.PanelHeight - f.height);
-			changeDirectionY();
-		}
-	}
-	//Führt zur Neuausrichtung der Bewegung bei Kontakt mit dem Panelrand
-	public void changeDirectionY() {
-		counterY = 200;
-		counterY2 = 200;
-	}
-	public void changeDirectionX() {
-		counterX = 200;
-		counterX2 = 200;
-	}
-
-	public double MathRandomX(){
-		if(counterX >= 150){
-			mrx = Math.random();
-			counterX = 0;
-		}
-		counterX++;
-		return mrx;
-	}
-
-	public double MathRandomX2(){
-		if(counterX2 >= 150){
-			mrx2 = Math.random();
-			counterX2 = 0;
-		}
-		counterX2++;
-		return mrx2;
-	}
-
-	public double MathRandomY(){
-		if(counterY >= 150){
-			mry = Math.random();
-			counterY = 0;
-		}
-		counterY++;
-		return mry;
-	}
-
-	public double MathRandomY2(){
-		if(counterY2 >= 150){
-			mry2 = Math.random();
-			counterY2 = 0;
-		}
-		counterY2++;
-		return mry2;
-	}
-
-	public void Movement(){
+	public void MovementTaube(){
 		synchronized (app.ObjectList){
 			for (Figur f : app.ObjectList){
 
-				if(f instanceof Taube || f instanceof Greifvogel){
-					f.x = (int) (f.x + f.speed * (MathRandomX() - MathRandomX2()) * 2 + 1);
-					//Korrektur x-Koordinate bei Lage außerhalb des Panels
-					CorrectXMovement(f);
-
-					f.y = (int) (f.y + f.speed * (MathRandomY() - MathRandomY2()) * 2 + 1);
-					//Korrektur y-Koordinate bei Lage außerhalb des Panels
-					CorrectYMovement(f);				
+				if(f instanceof Taube){
+					countFlug++;
+					f.x = computeXTaube(f.x, f.speed, countFlug);
+					f.y = computeYTaube(f.y, f.speed, countFlug);
+					
 				}
-				if(f instanceof Flugzeug){
-					f.x = f.x - f.speed;
-					f.x = correctXFlugzeug(f.x);
-					f.y = f.y - f.speed/2;
-					f.y = correctYFlugzeug(f.y);
-					if(f.y == -666){
-						app.ObjectList.remove(app.ObjectList.indexOf(f));
-					}
-				}
-				
+			
 				if(f instanceof Meteorit){
 					f.y += 10;
-					CorrectYMovement(f);
 					if(f.y >= app.PanelHeight - f.height){
 						GameOver("Meteoriteneinschlag, die Natur übt Rache für tote Vögel");
 					}
 				}
 			}
 		}
+		// entfernen der Flugzeuge aus der ObjectListe
+		for(int i = 0; i < RemoveListFlug.size(); i++){
+			app.ObjectList.remove(RemoveListFlug.get(i));
+		}
 	}
 	
+	
+	public void MovementFlugzeug(){
+		synchronized (app.ObjectList){
+			for (Figur f : app.ObjectList){
+				if(f instanceof Flugzeug){
+					countFlug++;
+					f.x = computeXFlugzeug(f.x, f.speed);
+					f.y = computeYFlugzeug(f.y, f.speed, countFlug);
+					if(f.y == -666){
+						RemoveListFlug.add(app.ObjectList.get(app.ObjectList.indexOf(f)));
+						app.comboBoxNameEnt.removeItemAt(app.ObjectList.indexOf(f));
+					}
+				}
+			}
+		}
+		// entfernen der Flugzeuge aus der ObjectListe
+		for(int i = 0; i < RemoveListFlug.size(); i++){
+			app.ObjectList.remove(RemoveListFlug.get(i));
+		}
+	}
+	
+	
+	
+	
+	
 	//Korrektur Flugzeug.. links raus, rechts wieder rein
-	public int correctXFlugzeug(int x){
+	public int computeXFlugzeug(int x, int speed){
 		if((x + 100) < 0){
 			x = app.PanelWidth;
+		} else{
+			x = x - speed;
 		}
 		return x;
 	}
 	
 	// wenn Flugzeug oben aus dem Panel rausgeht soll es komplett verschwinden.
 	// aus Objectliste, comboBoxEnt löschen
-	public int correctYFlugzeug(int y){
+	public int computeYFlugzeug(int y,int speed, int countFlug){
 		if((y + 80) < 0){
 			y = -666;
+		} else{
+	// nach 10 Berechnungen Anstieg	
+			if((countFlug % 10) == 0 || (countFlug % 10) == 1){
+				y -= 2;
+			}
 		}
-		
 		return y;
 	}
 
-
+	public double randXTaube(){
+		double x = Math.random();
+		return x;
+	}
+	
+	// koeffizient zur besstimmung der richtung
+	double i = 1;
+	//berechnung von x der taube
+	public int computeXTaube(int x, int speed, int countFlug){
+		
+		if (countFlug % 100 == 0){
+			i = Math.random();
+		}
+		int mult = 1;
+		if(i < 0.5){
+			mult = -1;
+		}
+		// änderung berechnungen
+		if((countFlug % 3) == 0){
+			x = x + mult * speed;
+		}
+		return x;
+	}
+	// berechnung von y der taube
+	public int computeYTaube(int y, int speed, int countFlug){
+		if (countFlug % 150 == 0){
+			i = Math.random();
+		}
+		int mult = 1;
+		if(i < 0.5){
+			mult = -1;
+		}
+		// änderung berechnungen
+		if((countFlug % 10) == 0){
+			y = y + (mult * speed)/2;
+		}
+		return y;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	//Löschung verbliebende Objekte bei Game Over
 	public void DeleteObjectCollisionAll(){
 		app.ObjectList.clear();
@@ -177,7 +182,8 @@ public class MovementTest extends Thread {
 		while(running){
 						
 			//Aufruf Movement Methode
-			Movement();
+			MovementTaube();
+			MovementFlugzeug();
 
 			try{
 				sleep(20);

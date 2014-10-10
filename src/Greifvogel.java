@@ -6,7 +6,7 @@ public class Greifvogel extends Flugobjekt{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	static int x = 0, y = 0, height = 20, width = 50, speed = 2;
+	static int x = 0, y = 0, height = 20, width = 50, speed = 3;
 	static String a = "Rechteck";
 	static String Typ = "Greifvogel";
 	

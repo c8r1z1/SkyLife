@@ -7,7 +7,7 @@ public class Taube extends Flugobjekt{
 	private static final long serialVersionUID = 1L;
 	
 	
-	static int x = 0, y = 0, height = 30, width = 45, speed = 1;
+	static int x = 0, y = 0, height = 30, width = 45, speed = 2;
 	static String a = "Rechteck";
 	static String Typ = "Taube";
 

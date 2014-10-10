@@ -1,4 +1,3 @@
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.io.File;
@@ -40,8 +39,6 @@ public class SkyLifePanel extends JPanel {
 		synchronized (app.ObjectList){
 			for (Figur f : app.ObjectList) {
 				if (f instanceof Taube) {
-					g.setColor(Color.red);
-					g.drawOval(f.x + 5, f.y, 30, 30);
 					g.drawImage(taubeImg, f.x, f.y, null);	
 				}
 				if(f instanceof Greifvogel) {
@@ -63,26 +60,6 @@ public class SkyLifePanel extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-
-
-//		@SuppressWarnings("unused")
-//		Image img;
-//
-//		if(app.comboBoxTyp.getSelectedItem().toString() == "Taube"){
-//			img = taubeImg;			
-//		}
-//		else if (app.comboBoxTyp.getSelectedItem().toString() == "Greifvogel"){
-//			img = gvImg;
-//		}
-//		else if (app.comboBoxTyp.getSelectedItem().toString() == "Flugzeug"){
-//			img = fzImg;
-//		}
-//		else if (app.comboBoxTyp.getSelectedItem().toString() == "Wolkenkratzer") {
-//			img = wkImg;
-//		}
-//		else{
-//			img = mImg;
-//		}
 
 		Draw(g);
 	}

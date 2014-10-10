@@ -12,7 +12,6 @@ public class RepaintThread extends Thread{
 	public void run(){
 			while(running){
 				app.panel.repaint();
-
 				try {
 					sleep(20);
 				} catch (InterruptedException e) {

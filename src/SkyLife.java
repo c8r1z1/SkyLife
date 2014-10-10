@@ -38,14 +38,13 @@ public class SkyLife {
 	JSpinner spinnerX, spinnerY;
 	JButton btnEinfgen, btnEntfernen;
 
-	JButton laden, speichern, start, stop, btnSetPanelSize, btnNchsterSchritt;
+	JButton laden, speichern, start, stop, btnSetPanelSize, btnNeu,
+			btnNchsterSchritt;
 	JComboBox<String> comboBoxTyp, comboBoxNameEnt;
 	JLabel lblNameEinf, lblNameEnt, lblHoehe, lblTyp, lblPosition, lblX, lblY,
 			lblHhe, lblBreite, lblPanelgre, lblMessage, lblMessageTxt;
 	JTextField txtPanelWidthadd, txtPanelHeightadd;
 	JTextPane txtInfo, KilledAnimals;
-	
-	
 
 	private JLayeredPane layeredPaneDelete;
 	public SkyLifePanel panel;
@@ -62,6 +61,18 @@ public class SkyLife {
 	// Button zum Verbinden zum Server + RMI Innenleben
 	// Remote Steueurung einbauen
 
+	// wolkenkratzer nicht übereinander einfügen
+
+	// maximale anzahl an objekten
+	// taube
+	int countTaube = 0;
+	// greifvogel
+	int countGreifvogel = 0;
+	// flugezeug = 3
+	int countFlugzeug = 0;
+	// wolkenkratzer = 2
+	int countWolkenkratzer = 0;
+
 	// ToTest's
 	// Einfügen Objekterzeugung mit Kollisionsüberprüfung
 	// Smooth für Bewegung über Zwischenzeichnung -> Veränderung über
@@ -76,11 +87,11 @@ public class SkyLife {
 
 	// Liste für Entfernung von Objekten
 	List<String> ListNameEinf = new ArrayList<String>();
-	
-	//Liste der geladenen Objekten
+
+	// Liste der geladenen Objekten
 	List<Figur> LoadList = new ArrayList<Figur>();
-	
-	//Liste für Speicherobjekte
+
+	// Liste für Speicherobjekte
 	List<Object> SaveList = new ArrayList<Object>();
 
 	static SkyLife window;
@@ -93,7 +104,7 @@ public class SkyLife {
 	static CollisionThread tcol;
 	// Thread für Neuzeichnung des Panels
 	static RepaintThread trep;
-	
+
 	// allgemeine Figur.. für Load
 	Figur fig = new Figur(null, null, 0, 0, 0, 0, 0, null);
 
@@ -120,38 +131,53 @@ public class SkyLife {
 
 				if (comboBoxTyp.getSelectedItem().toString() == "Taube") {
 
-					Taube taube = new Taube(nameFieldEinf.getText(), (Integer) spinnerX.getValue(), (Integer) spinnerY.getValue());
+					Taube taube = new Taube(nameFieldEinf.getText(),
+							(Integer) spinnerX.getValue(),
+							(Integer) spinnerY.getValue());
 					ObjectList.add(taube);
 					CorrectPosition(taube, ObjectList);
+					countTaube++;
 					// Text für Message
-					lblMessageTxt.setText(Taube.Typ + " " + taube.name + " eingefügt");
+					lblMessageTxt.setText(Taube.Typ + " " + taube.name
+							+ " eingefügt");
 
 				} else if (comboBoxTyp.getSelectedItem().toString() == "Greifvogel") {
 
-					Greifvogel gv = new Greifvogel(nameFieldEinf.getText(), (Integer) spinnerX.getValue(), (Integer) spinnerY.getValue());
+					Greifvogel gv = new Greifvogel(nameFieldEinf.getText(),
+							(Integer) spinnerX.getValue(),
+							(Integer) spinnerY.getValue());
 					ObjectList.add(gv);
 					CorrectPosition(gv, ObjectList);
-
+					countGreifvogel++;
 					// Text für Message
-					lblMessageTxt.setText(Greifvogel.Typ + " " + gv.name + " eingefügt");
+					lblMessageTxt.setText(Greifvogel.Typ + " " + gv.name
+							+ " eingefügt");
 
 				} else if (comboBoxTyp.getSelectedItem().toString() == "Flugzeug") {
 
-					Flugzeug fz = new Flugzeug(nameFieldEinf.getText(), (Integer) spinnerX.getValue(), (Integer) spinnerY.getValue());
+					Flugzeug fz = new Flugzeug(nameFieldEinf.getText(),
+							(Integer) spinnerX.getValue(),
+							(Integer) spinnerY.getValue());
 					ObjectList.add(fz);
 					CorrectPosition(fz, ObjectList);
-
+					countFlugzeug++;
 					// Text für Message
-					lblMessageTxt.setText(Flugzeug.Typ + " " + fz.name + " eingefügt");
+					lblMessageTxt.setText(Flugzeug.Typ + " " + fz.name
+							+ " eingefügt");
 
 				} else {
 
-					Wolkenkratzer wk = new Wolkenkratzer(nameFieldEinf.getText(), (Integer) spinnerX.getValue(), PanelHeight - Wolkenkratzer.height);
+					Wolkenkratzer wk = new Wolkenkratzer(
+							nameFieldEinf.getText(),
+							(Integer) spinnerX.getValue(), PanelHeight
+									- Wolkenkratzer.height);
 					ObjectList.add(wk);
 					correctx(wk);
-
+					CorrectPosition(wk, ObjectList);
+					countWolkenkratzer++;
 					// Text für Message
-					lblMessageTxt.setText(Wolkenkratzer.Typ + " " + wk.name + " eingefügt");
+					lblMessageTxt.setText(Wolkenkratzer.Typ + " " + wk.name
+							+ " eingefügt");
 
 				}
 				frame.getContentPane().add(panel);
@@ -180,38 +206,38 @@ public class SkyLife {
 	public void createObject2(Figur fig) {
 		synchronized (ObjectList) {
 
-				System.out.println(fig);
-				System.out.println(fig.Typ);
+			// System.out.println(fig);
+			// System.out.println(fig.Typ);
 
-				// fig.Typ == "Taube" klappt nicht
-				if (fig.Typ.length() == 5) {
+			// fig.Typ == "Taube" klappt nicht
+			if (fig.Typ.length() == 5) {
 
-					Taube taube = new Taube(fig.name, fig.x, fig.y);
-					ObjectList.add(taube);
-					
-				} else if (fig.Typ.length() == 10) {
+				Taube taube = new Taube(fig.name, fig.x, fig.y);
+				ObjectList.add(taube);
 
-					Greifvogel gv = new Greifvogel(fig.name, fig.x, fig.y);
-					ObjectList.add(gv);
-					
-				} else if (fig.Typ.length() == 8) {
+			} else if (fig.Typ.length() == 10) {
 
-					Flugzeug fz = new Flugzeug(fig.name, fig.x, fig.y);
-					ObjectList.add(fz);
-					
-				} else {
-					if(fig.y != PanelHeight - Wolkenkratzer.height){
-						fig.y = PanelHeight - Wolkenkratzer.height;
-					}
-					Wolkenkratzer wk = new Wolkenkratzer(fig.name,fig.x, fig.y);
-					ObjectList.add(wk);
+				Greifvogel gv = new Greifvogel(fig.name, fig.x, fig.y);
+				ObjectList.add(gv);
+
+			} else if (fig.Typ.length() == 8) {
+
+				Flugzeug fz = new Flugzeug(fig.name, fig.x, fig.y);
+				ObjectList.add(fz);
+
+			} else {
+				if (fig.y != PanelHeight - Wolkenkratzer.height) {
+					fig.y = PanelHeight - Wolkenkratzer.height;
 				}
-				frame.getContentPane().add(panel);
-				panel.repaint();
+				Wolkenkratzer wk = new Wolkenkratzer(fig.name, fig.x, fig.y);
+				ObjectList.add(wk);
+			}
+			frame.getContentPane().add(panel);
+			panel.repaint();
 
-				// Hinzufügen zur Liste für Entfernung
-				ListNameEinf.add(fig.name);
-				comboBoxNameEnt.addItem(fig.name);
+			// Hinzufügen zur Liste für Entfernung
+			ListNameEinf.add(fig.name);
+			comboBoxNameEnt.addItem(fig.name);
 
 			// Deaktivierung Button für Neusetzen der Panelgröße, sobald Objekt
 			// enthalten
@@ -219,16 +245,27 @@ public class SkyLife {
 				btnSetPanelSize.setEnabled(false);
 			}
 		}
-		System.out.println(ObjectList);
+		// System.out.println(ObjectList);
 	}
 
 	public void deleteObject() {
 		synchronized (ObjectList) {
 			for (int i = 0; i < ObjectList.size(); i++) {
-				if (ObjectList.get(i).name.equalsIgnoreCase((String) comboBoxNameEnt.getSelectedItem())) {
-					lblMessageTxt.setText(ObjectList.get(i).Typ + " " + ObjectList.get(i).name + " entfernt");
+				if (ObjectList.get(i).name
+						.equalsIgnoreCase((String) comboBoxNameEnt
+								.getSelectedItem())) {
+					lblMessageTxt.setText(ObjectList.get(i).Typ + " "
+							+ ObjectList.get(i).name + " entfernt");
+					if (ObjectList.get(i).Typ == "Taube") {
+						countTaube--;
+					} else if (ObjectList.get(i).Typ == "Greifvogel") {
+						countGreifvogel--;
+					} else if (ObjectList.get(i).Typ == "Flugzeug") {
+						countFlugzeug--;
+					} else if (ObjectList.get(i).Typ == "Wolkenkratzer") {
+						countWolkenkratzer--;
+					}
 					ObjectList.remove(i);
-					System.out.println(ObjectList.toString());
 					break;
 				}
 			}
@@ -238,10 +275,11 @@ public class SkyLife {
 			if (ObjectList.size() == 0) {
 				btnSetPanelSize.setEnabled(true);
 				stop.setEnabled(false);
-//				tmov.running = false;
+				// tmov.running = false;
 				tmovtest.running = false;
 				tcol.running = false;
 				trep.running = false;
+				start.setEnabled(true);
 			}
 		}
 	}
@@ -269,7 +307,6 @@ public class SkyLife {
 		}
 		// Kreis kollidiert mit Kreis
 		else if (a.f.toString() == "Kreis" && b.f.toString() == "Kreis") {
-			System.out.println("Kreiskollision");
 			if (pointdistanceCircle(a, b) <= ((a.x / 2) + (b.x / 2))) {
 				return true;
 			}
@@ -333,8 +370,11 @@ public class SkyLife {
 	}
 
 	public void CorrectPosition(Figur f, List<Figur> ObjectList) {
-		correctx(f);
-		correcty(f);
+		if (f instanceof Taube || f instanceof Greifvogel
+				|| f instanceof Flugzeug) {
+			correctx(f);
+			correcty(f);
+		}
 		if (ObjectList.size() > 1) {
 			for (int i = 0; i < (ObjectList.size() - 1); i++) {
 				boolean collision = collision(f, ObjectList.get(i));
@@ -352,7 +392,8 @@ public class SkyLife {
 								correctxshift(f);
 								f.y = (ObjectList.get(i).y - f.height - 5);
 								if (f.y < 0) {
-									lblMessageTxt.setText("Panel ist voll und Objekt kann nicht plaziert werden");
+									lblMessageTxt
+											.setText("Panel ist voll und Objekt kann nicht plaziert werden");
 								}
 							}
 						}
@@ -414,7 +455,7 @@ public class SkyLife {
 			if (ListNameEinf.get(i).equals((String) name)) {
 				comboBoxNameEnt.removeAllItems();
 				ListNameEinf.remove(i);
-				System.out.println(ListNameEinf);
+				// System.out.println(ListNameEinf);
 				break;
 			}
 		}
@@ -430,8 +471,8 @@ public class SkyLife {
 	public static void main(String[] args) {
 		window = new SkyLife();
 		window.frame.setVisible(true);
-//		tmov = new MovementThread(window);
-		
+		// tmov = new MovementThread(window);
+
 		tmovtest = new MovementTest(window);
 		tcol = new CollisionThread(window);
 		trep = new RepaintThread(window);
@@ -452,11 +493,11 @@ public class SkyLife {
 		speichern.setBounds(35, 90, 135, 25);
 		frame.getContentPane().add(speichern);
 		speichern.addActionListener(new ActionListener() {
-//			int a;
+			// int a;
 
 			public void actionPerformed(ActionEvent e) {
 				// GUI stoppen
-//				tmov.running = false;
+				// tmov.running = false;
 				tmovtest.running = false;
 				tcol.running = false;
 				trep.running = false;
@@ -466,15 +507,6 @@ public class SkyLife {
 							+ ObjectList.get(i).name + " "
 							+ ObjectList.get(i).x + " " + ObjectList.get(i).y);
 				}
-
-				System.out.println(SaveList);
-				System.out.println(SaveList.toString().length());
-				System.out.println(SaveList.toString().substring(
-						SaveList.toString().indexOf(" ", SaveList.toString().indexOf(" ") + 1) + 1,
-						SaveList.toString().indexOf(" ", SaveList.toString().indexOf(" ", SaveList.toString().indexOf(" ") + 1) + 1)));
-				System.out.println(SaveList.toString().substring(
-						SaveList.toString().indexOf(" ", SaveList.toString().indexOf(" ", SaveList.toString().indexOf(" ") + 1) + 1) + 1,SaveList.toString().length() - 1));
-
 				File file = new File("SkyLife.ser");
 				saveObject(SaveList, file);
 				// System.out.println(ObjectList);
@@ -490,8 +522,6 @@ public class SkyLife {
 
 			public void actionPerformed(ActionEvent arg0) {
 
-				
-
 				BufferedReader br = null;
 				String zeile;
 				br = loadFile("SkyLife.ser");
@@ -499,14 +529,18 @@ public class SkyLife {
 				try {
 					while ((zeile = br.readLine()) != null) {
 
-						fig.Typ = zeile.toString().substring(0, zeile.indexOf(" "));
+						fig.Typ = zeile.toString().substring(0,
+								zeile.indexOf(" "));
 						fig.name = zeile.toString().substring(
-								zeile.indexOf(" ") + 1, zeile.indexOf(" ",zeile.indexOf(" ") + 1));
+								zeile.indexOf(" ") + 1,
+								zeile.indexOf(" ", zeile.indexOf(" ") + 1));
 						fig.x = Integer.parseInt(zeile.toString().substring(
 								zeile.indexOf(" ", zeile.indexOf(" ") + 1) + 1,
-								zeile.indexOf(" ", zeile.indexOf(" ", zeile.indexOf(" ") + 1) + 1)));
+								zeile.indexOf(" ", zeile.indexOf(" ",
+										zeile.indexOf(" ") + 1) + 1)));
 						fig.y = Integer.parseInt(zeile.toString().substring(
-								zeile.indexOf(" ", zeile.indexOf(" ", zeile.indexOf(" ") + 1) + 1) + 1,
+								zeile.indexOf(" ", zeile.indexOf(" ",
+										zeile.indexOf(" ") + 1) + 1) + 1,
 								zeile.length()));
 
 						createObject2(fig);
@@ -529,17 +563,16 @@ public class SkyLife {
 			public void actionPerformed(ActionEvent e) {
 
 				if (startclicked == 0) {
-//					tmov.start();
+					// tmov.start();
 					tmovtest.start();
-					System.out.println(ObjectList);
 					tcol.start();
 					trep.start();
 				} else {
-//					tmov = new MovementThread(window);
+					// tmov = new MovementThread(window);
 					tmovtest = new MovementTest(window);
 					tcol = new CollisionThread(window);
 					trep = new RepaintThread(window);
-//					tmov.start();
+					// tmov.start();
 					tmovtest.start();
 					tcol.start();
 					trep.start();
@@ -548,6 +581,8 @@ public class SkyLife {
 				stop.setEnabled(true);
 				lblMessageTxt.setText("Spiel gestartet");
 				startclicked++;
+				start.setEnabled(false);
+
 			}
 		});
 
@@ -561,17 +596,44 @@ public class SkyLife {
 		stop.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-//				tmov.running = false;
+				// tmov.running = false;
 				tmovtest.running = false;
 				tcol.running = false;
 				trep.running = false;
 
 				// tmovstep.start();
-				btnNchsterSchritt.setEnabled(true);
+				btnNchsterSchritt.setEnabled(false);
 				stop.setEnabled(false);
-
+				start.setEnabled(true);
 				lblMessageTxt.setText("Spiel gestoppt");
 
+			}
+		});
+		
+		// Stand zurücksetzen
+		btnNeu = new JButton("Neu");
+		btnNeu.setBounds(35, 128, 135, 25);
+		frame.getContentPane().add(btnNeu);
+
+		btnNeu.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent arg0) {
+				// Items in Listen Entfernen.. Werte zurücksetzen
+				ObjectList.clear();
+				comboBoxNameEnt.removeAllItems();
+				nameFieldEinf.setText(null);
+				spinnerX.setValue(0);
+				spinnerY.setValue(0);
+				panel.repaint();
+				// threads stoppen falls gestartet.. start, stop sichtbarkeit
+				if (tmovtest.running = true && tcol.running == true
+						&& trep.running == true) {
+					tmovtest.running = false;
+					tcol.running = false;
+					trep.running = false;
+					start.setEnabled(true);
+					stop.setEnabled(false);
+				}
 			}
 		});
 
@@ -653,7 +715,18 @@ public class SkyLife {
 
 			public void actionPerformed(ActionEvent e) {
 				// Erstellung Objekt
-				createObject();
+				if (countTaube >= 10) {
+					lblMessageTxt.setText("Maximale Anzahl an Tauben!");
+				} else if (countGreifvogel >= 10) {
+					lblMessageTxt.setText("Maximale Anzahl an Greifvögeln!");
+				} else if (countFlugzeug >= 3) {
+					lblMessageTxt.setText("Maximale Anzahl an Flugzeugen!");
+				} else if (countWolkenkratzer >= 2) {
+					lblMessageTxt.setText("Maximale Anzahl an Wolkenkratzern!");
+				} else {
+					createObject();
+				}
+
 			}
 		});
 
