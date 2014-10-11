@@ -33,7 +33,7 @@ public class SkyLife {
 
 	JFrame frame;
 
-	private JTextField nameFieldEinf;
+	JTextField nameFieldEinf;
 
 	JSpinner spinnerX, spinnerY;
 	JButton btnEinfgen, btnEntfernen;
@@ -61,7 +61,7 @@ public class SkyLife {
 	// Button zum Verbinden zum Server + RMI Innenleben
 	// Remote Steueurung einbauen
 
-	// wolkenkratzer nicht übereinander einfügen
+	// werte bei game over zurücksetzen
 
 	// maximale anzahl an objekten
 	// taube
@@ -280,6 +280,9 @@ public class SkyLife {
 				tcol.running = false;
 				trep.running = false;
 				start.setEnabled(true);
+				nameFieldEinf.setText(null);
+				spinnerX.setValue(0);
+				spinnerY.setValue(0);
 			}
 		}
 	}

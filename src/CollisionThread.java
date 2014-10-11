@@ -205,6 +205,9 @@ public class CollisionThread extends Thread {
 		app.updateInfo();
 		app.killedAnimals = 0;
 		app.updateKilledAnimals();
+		app.nameFieldEinf.setText(null);
+		app.spinnerX.setValue(0);
+		app.spinnerY.setValue(0);
 		SkyLife.tmov.running = false;
 		SkyLife.trep.running = false;
 		SkyLife.tcol.running = false;
