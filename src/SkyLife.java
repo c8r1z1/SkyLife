@@ -30,33 +30,26 @@ public class SkyLife {
 	public enum FORM {
 		Kreis, Rechteck
 	};
-
+	// Variablendefinition
 	JFrame frame;
-
 	JTextField nameFieldEinf;
-
 	JSpinner spinnerX, spinnerY;
-	JButton btnEinfgen, btnEntfernen;
-
-	JButton laden, speichern, start, stop, btnSetPanelSize, btnNeu,
+	JButton btnEinfgen, btnEntfernen, laden, speichern, start, stop, btnSetPanelSize, btnNeu,
 			btnNchsterSchritt;
 	JComboBox<String> comboBoxTyp, comboBoxNameEnt;
 	JLabel lblNameEinf, lblNameEnt, lblHoehe, lblTyp, lblPosition, lblX, lblY,
 			lblHhe, lblBreite, lblPanelgre, lblMessage, lblMessageTxt;
 	JTextField txtPanelWidthadd, txtPanelHeightadd;
 	JTextPane txtInfo, KilledAnimals;
-
 	private JLayeredPane layeredPaneDelete;
 	public SkyLifePanel panel;
 	public int PanelHeight = 450;
 	public int PanelWidth = 900;
-	private int startclicked = 0;
+	private int startclicked = 0;		// counter des Startdrückens
 
-	// ToDo's
-	// Meteoriten Kollision einbauen
+	// ToDo's // nicht mehr geschafft
 	// Auslagerung Ausweichmanöver und Kollisionsüberprüfung Erzeugung
 	// Schrittweises Ablaufen lauffähig machen
-	// Save and Load implementieren
 	// Button zum Starten des RMI Servers, Feld zur Eingabe von IP-Adresse,
 	// Button zum Verbinden zum Server + RMI Innenleben
 	// Remote Steueurung einbauen
@@ -70,12 +63,6 @@ public class SkyLife {
 	int countFlugzeug = 0;
 	// wolkenkratzer = 2
 	int countWolkenkratzer = 0;
-
-	// ToTest's
-	// Einfügen Objekterzeugung mit Kollisionsüberprüfung
-	// Smooth für Bewegung über Zwischenzeichnung -> Veränderung über
-	// MovementThread Formel zur Berechnung von neuer Position
-	// -> eventuell Änderung Bewegungsabläufe generell
 
 	// Objekt Liste für alle Objekte innerhalb des Panels
 	public List<Figur> ObjectList = new ArrayList<Figur>();
@@ -107,9 +94,11 @@ public class SkyLife {
 	// Thread für schrittweise Bewegung der Objekte
 	// static MovementStepbyStepThread tmovstep;
 
+	// Object erzeugen
 	public void createObject() {
 		synchronized (ObjectList) {
-			boolean nameInUse = false;
+			boolean nameInUse = false;	// false = Name nicht benutzt
+			// Überprüfen ob Name schon benutzt
 			if (ObjectList.size() != 0) {
 				for (int i = 0; i < ObjectList.size(); i++) {
 					String name = ObjectList.get(i).name;
@@ -119,14 +108,13 @@ public class SkyLife {
 					}
 				}
 			}
-
+			// wenn Name nicht benutzt und das Feld nicht leer
 			if (!nameInUse && nameFieldEinf.getText() != "") {
 
 				// Überprüfung: Objekte dürfen nicht aufeinander eingefügt
 				// werden!!!
-
+				// Taube einfügen
 				if (comboBoxTyp.getSelectedItem().toString() == "Taube") {
-
 					Taube taube = new Taube(nameFieldEinf.getText(),
 							(Integer) spinnerX.getValue(),
 							(Integer) spinnerY.getValue());
@@ -136,9 +124,9 @@ public class SkyLife {
 					// Text für Message
 					lblMessageTxt.setText(Taube.Typ + " " + taube.name
 							+ " eingefügt");
-
-				} else if (comboBoxTyp.getSelectedItem().toString() == "Greifvogel") {
-
+				} 
+				// Greifvogel einfügen
+				else if (comboBoxTyp.getSelectedItem().toString() == "Greifvogel") {
 					Greifvogel gv = new Greifvogel(nameFieldEinf.getText(),
 							(Integer) spinnerX.getValue(),
 							(Integer) spinnerY.getValue());
@@ -148,9 +136,9 @@ public class SkyLife {
 					// Text für Message
 					lblMessageTxt.setText(Greifvogel.Typ + " " + gv.name
 							+ " eingefügt");
-
-				} else if (comboBoxTyp.getSelectedItem().toString() == "Flugzeug") {
-
+				} 
+				// Flugzeug einfügen
+				else if (comboBoxTyp.getSelectedItem().toString() == "Flugzeug") {
 					Flugzeug fz = new Flugzeug(nameFieldEinf.getText(),
 							(Integer) spinnerX.getValue(),
 							(Integer) spinnerY.getValue());
@@ -160,9 +148,9 @@ public class SkyLife {
 					// Text für Message
 					lblMessageTxt.setText(Flugzeug.Typ + " " + fz.name
 							+ " eingefügt");
-
-				} else {
-
+				} 
+				// Wolkenkratzer einfügen
+				else {
 					Wolkenkratzer wk = new Wolkenkratzer(
 							nameFieldEinf.getText(),
 							(Integer) spinnerX.getValue(), PanelHeight
@@ -174,7 +162,6 @@ public class SkyLife {
 					// Text für Message
 					lblMessageTxt.setText(Wolkenkratzer.Typ + " " + wk.name
 							+ " eingefügt");
-
 				}
 				frame.getContentPane().add(panel);
 				panel.repaint();
@@ -205,6 +192,7 @@ public class SkyLife {
 			// System.out.println(fig);
 			// System.out.println(fig.Typ);
 
+			// Taube einfügen
 			// fig.Typ == "Taube" klappt nicht
 			if (fig.Typ.length() == 5) {
 
@@ -212,19 +200,25 @@ public class SkyLife {
 				ObjectList.add(taube);
 				countTaube++;
 
-			} else if (fig.Typ.length() == 10) {
+			} 
+			// Greifvogel einfügen
+			else if (fig.Typ.length() == 10) {
 
 				Greifvogel gv = new Greifvogel(fig.name, fig.x, fig.y);
 				ObjectList.add(gv);
 				countGreifvogel++;
 
-			} else if (fig.Typ.length() == 8) {
+			} 
+			// Flugzeug einfügen
+			else if (fig.Typ.length() == 8) {
 
 				Flugzeug fz = new Flugzeug(fig.name, fig.x, fig.y);
 				ObjectList.add(fz);
 				countFlugzeug++;
 
-			} else {
+			} 
+			// Wolkenkratzer einfügen
+			else {
 				if (fig.y != PanelHeight - Wolkenkratzer.height) {
 					fig.y = PanelHeight - Wolkenkratzer.height;
 				}
@@ -248,6 +242,7 @@ public class SkyLife {
 		// System.out.println(ObjectList);
 	}
 
+	// Object löschen
 	public void deleteObject() {
 		synchronized (ObjectList) {
 			for (int i = 0; i < ObjectList.size(); i++) {
@@ -422,7 +417,7 @@ public class SkyLife {
 		}
 
 	}
-
+	
 	public void correctxshift(Figur f) {
 		if (f.x > (PanelWidth - f.width)) {
 			f.x = (PanelWidth - f.width);
@@ -452,7 +447,7 @@ public class SkyLife {
 			f.y = 0;
 		}
 	}
-
+	// Entfernen eines Objectes
 	public void deleteObjectList(String name) {
 
 		// Entfernen aus Auswahlliste in ComboBox für Entfernung
@@ -461,7 +456,6 @@ public class SkyLife {
 			if (ListNameEinf.get(i).equals((String) name)) {
 				comboBoxNameEnt.removeAllItems();
 				ListNameEinf.remove(i);
-				// System.out.println(ListNameEinf);
 				break;
 			}
 		}
@@ -473,18 +467,40 @@ public class SkyLife {
 		panel.repaint();
 		updateInfo();
 	}
+	//Speichern des Standes
+	public void saveObject(List<Object> saveList, File datei) {
+		PrintWriter printWriter = null;
+		try {
+			printWriter = new PrintWriter(new BufferedWriter(new FileWriter(
+					datei)));
+			Iterator<Object> iter = saveList.iterator();
+			while (iter.hasNext()) {
+				Object o = iter.next();
+				printWriter.println(o);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (printWriter != null)
+				printWriter.close();
+		}
 
-	public static void main(String[] args) {
-		window = new SkyLife();
-		window.frame.setVisible(true);
-		tmov = new MovementThread(window);
-		tcol = new CollisionThread(window);
-		trep = new RepaintThread(window);
-
+	}
+	// Laden des Standes
+	public BufferedReader loadFile(String fileName) {
+		FileReader fr = null;
+		BufferedReader br = null;
+		try {
+			fr = new FileReader(fileName);
+			br = new BufferedReader(fr);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return br;
 	}
 
 	public SkyLife() {
-
+		// frame von SkyLife
 		frame = new JFrame();
 		frame.setResizable(true);
 		frame.setBounds(0, 0, 1000, 825);
@@ -492,7 +508,6 @@ public class SkyLife {
 		frame.getContentPane().setLayout(null);
 
 		// Button zum Speichern des Standes
-
 		speichern = new JButton("Speichern");
 		speichern.setBounds(35, 90, 135, 25);
 		frame.getContentPane().add(speichern);
@@ -500,51 +515,57 @@ public class SkyLife {
 
 			public void actionPerformed(ActionEvent e) {
 				// GUI stoppen
-				 tmov.running = false;
+				tmov.running = false;
 				tcol.running = false;
 				trep.running = false;
-
+				
+				// hinzufügen der Objekte zur SaveList
 				for (int i = 0; i < ObjectList.size(); i++) {
+					// gespeichert wird der Typ, der Name und die Koordinaten des Objektes
 					SaveList.add(ObjectList.get(i).Typ + " "
 							+ ObjectList.get(i).name + " "
 							+ ObjectList.get(i).x + " " + ObjectList.get(i).y);
 				}
+				// Erstellen der Speicherdatei
 				File file = new File("src/Save/SkyLife.ser");
 				saveObject(SaveList, file);
-				// System.out.println(ObjectList);
 				lblMessageTxt.setText("Stand gespeichert!");
 			}
 		});
 
 		// Button zum Laden des alten Standes
-
 		laden = new JButton("Laden");
 		laden.setBounds(35, 50, 135, 25);
 		frame.getContentPane().add(laden);
 		laden.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
-				BufferedReader br = null;
-				String zeile;
-				br = loadFile("src/Save/SkyLife.ser");
-
+				
+				BufferedReader br = null;				// Iterator über liste
+				String zeile;							// Wert/e einer Zeile
+				br = loadFile("src/Save/SkyLife.ser");	//Laden der Datei
+				
+				//Iteration über Liste, Zeile für Zeile
 				try {
 					while ((zeile = br.readLine()) != null) {
-						
+						// Typ ist bis zum ersten Leerzeichen
 						fig.Typ = zeile.toString().substring(0,
 								zeile.indexOf(" "));
+						// Name zwischen erstem und zweitem Leerzeichen
 						fig.name = zeile.toString().substring(
 								zeile.indexOf(" ") + 1,
 								zeile.indexOf(" ", zeile.indexOf(" ") + 1));
+						// x- Koordinate zwischen dem zweiten und dem dritten Leerzeichen
 						fig.x = Integer.parseInt(zeile.toString().substring(
 								zeile.indexOf(" ", zeile.indexOf(" ") + 1) + 1,
 								zeile.indexOf(" ", zeile.indexOf(" ",
 										zeile.indexOf(" ") + 1) + 1)));
+						// y- Kordinate zwischen dem dritten und dem vierten Leerzeichen bzw. Ende der Zeile
 						fig.y = Integer.parseInt(zeile.toString().substring(
 								zeile.indexOf(" ", zeile.indexOf(" ",
 										zeile.indexOf(" ") + 1) + 1) + 1,
 								zeile.length()));
-
+						// erzeuge Objekt
 						createObject2(fig);
 					}
 					br.close();
@@ -553,13 +574,14 @@ public class SkyLife {
 				}
 				lblMessageTxt.setText("Stand geladen!");
 				updateInfo();
+				// Laden nach Ende nicht mehr ermöglichen
 				laden.setEnabled(false);
+				// Starten zur Verfügung stellen
 				start.setEnabled(true);
 			}
 		});
 
 		// Button zum Starten des alten Standes
-
 		start = new JButton("Start");
 		start.setBounds(195, 50, 135, 25);
 		frame.getContentPane().add(start);
@@ -567,16 +589,18 @@ public class SkyLife {
 		start.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-
+				// beim erstenmal klicken die Threads starten
 				if (startclicked == 0) {
-					 tmov.start();
+					tmov.start();
 					tcol.start();
 					trep.start();
-				} else {
-					 tmov = new MovementThread(window);
+				} 
+				// erzeugen und starten der Threads
+				else {
+					tmov = new MovementThread(window);
 					tcol = new CollisionThread(window);
 					trep = new RepaintThread(window);
-					 tmov.start();
+					tmov.start();
 					tcol.start();
 					trep.start();
 				}
@@ -589,7 +613,6 @@ public class SkyLife {
 		});
 
 		// Button zum Stoppen des Standes
-
 		stop = new JButton("Stop");
 		stop.setBounds(195, 90, 135, 25);
 		stop.setEnabled(false);
@@ -598,7 +621,8 @@ public class SkyLife {
 		stop.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				 tmov.running = false;
+				// stoppen der Threads
+				tmov.running = false;
 				tcol.running = false;
 				trep.running = false;
 
@@ -649,7 +673,6 @@ public class SkyLife {
 		});
 
 		// Button für schrittweises Ablaufen lassen
-
 		btnNchsterSchritt = new JButton("Next Step");
 		btnNchsterSchritt.setEnabled(false);
 		btnNchsterSchritt.setBounds(205, 137, 117, 29);
@@ -663,18 +686,18 @@ public class SkyLife {
 		// }
 		// });
 
-		// Neues Objekt einfuegen
-
+		// Container des Einfügens
 		JLayeredPane layeredPaneAdd = new JLayeredPane();
 		layeredPaneAdd.setBorder(new LineBorder(new Color(0, 0, 0)));
 		layeredPaneAdd.setBounds(375, 50, 250, 170);
 		frame.getContentPane().add(layeredPaneAdd);
-
+		
+		// JLabel des Typs
 		lblTyp = new JLabel("Typ:");
 		lblTyp.setHorizontalAlignment(SwingConstants.LEFT);
 		lblTyp.setBounds(5, 20, 61, 15);
 		layeredPaneAdd.add(lblTyp);
-
+		// comboBox der Typen
 		comboBoxTyp = new JComboBox<String>();
 		comboBoxTyp.setBounds(70, 15, 150, 25);
 		layeredPaneAdd.add(comboBoxTyp);
@@ -683,41 +706,41 @@ public class SkyLife {
 		comboBoxTyp.addItem("Greifvogel");
 		comboBoxTyp.addItem("Flugzeug");
 		comboBoxTyp.addItem("Wolkenkratzer");
-
+		// Label des Name
 		lblNameEinf = new JLabel("Name:");
 		lblNameEinf.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNameEinf.setBounds(5, 55, 61, 15);
 		layeredPaneAdd.add(lblNameEinf);
-
+		// Textfeld des Names
 		nameFieldEinf = new JTextField();
 		nameFieldEinf.setBounds(70, 50, 150, 25);
 		layeredPaneAdd.add(nameFieldEinf);
 		nameFieldEinf.setColumns(10);
-
+		// Label der Position
 		lblPosition = new JLabel("Position:");
 		lblPosition.setHorizontalAlignment(SwingConstants.LEFT);
 		lblPosition.setBounds(5, 95, 61, 15);
 		layeredPaneAdd.add(lblPosition);
-
+		// Label x- Koordinate
 		lblX = new JLabel("X:");
 		lblX.setHorizontalAlignment(SwingConstants.CENTER);
 		lblX.setBounds(60, 95, 30, 15);
 		layeredPaneAdd.add(lblX);
-
+		// Wert der x- Korrdinate
 		spinnerX = new JSpinner();
 		layeredPaneAdd.setLayer(spinnerX, 0);
 		spinnerX.setBounds(90, 90, 61, 25);
 		layeredPaneAdd.add(spinnerX);
-
+		// Label y- Koordinate
 		lblY = new JLabel("Y:");
 		lblY.setHorizontalAlignment(SwingConstants.CENTER);
 		lblY.setBounds(150, 94, 24, 16);
 		layeredPaneAdd.add(lblY);
-
+		// Wert der y- Koordinate
 		spinnerY = new JSpinner();
 		spinnerY.setBounds(170, 90, 61, 25);
 		layeredPaneAdd.add(spinnerY);
-
+		// Button zum Einfügen
 		btnEinfgen = new JButton("Einf\u00FCgen");
 		btnEinfgen.setBounds(5, 130, 100, 25);
 		layeredPaneAdd.add(btnEinfgen);
@@ -725,20 +748,24 @@ public class SkyLife {
 		btnEinfgen.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				// Erstellung Objekt
+				// Erstellung Objekt wenn die maximal Anzahl nicht erreicht
 				if (countTaube <= 10 && countGreifvogel <= 10
 						&& countFlugzeug <= 3 && countWolkenkratzer <= 2) {
 					createObject();
 				}
+				// maximal 10 Tauben
 				if (countTaube > 10) {
 					lblMessageTxt.setText("Maximale Anzahl an Tauben!");
 				}
+				// maximal 10 Greifvögel
 				if (countGreifvogel > 10) {
 					lblMessageTxt.setText("Maximale Anzahl an Greifvögeln!");
 				}
+				// maximal 3 Flugzeuge
 				if (countFlugzeug > 3) {
 					lblMessageTxt.setText("Maximale Anzahl an Flugzeugen!");
 				}
+				// maximal 2 Wolkenkratzer
 				if (countWolkenkratzer > 2) {
 					lblMessageTxt.setText("Maximale Anzahl an Wolkenkratzern!");
 				}
@@ -748,34 +775,33 @@ public class SkyLife {
 		});
 
 		// Panel-Größe einstellen
-
 		JLayeredPane layeredPanePanelSize = new JLayeredPane();
 		layeredPanePanelSize.setBorder(new LineBorder(new Color(0, 0, 0)));
 		layeredPanePanelSize.setBounds(671, 50, 250, 83);
 		frame.getContentPane().add(layeredPanePanelSize);
-
+		// Label Panelgröße
 		lblPanelgre = new JLabel("Panelgröße:");
 		lblPanelgre.setFont(new Font("Lucida Grande", Font.BOLD, 13));
 		lblPanelgre.setBounds(6, 6, 92, 16);
 		layeredPanePanelSize.add(lblPanelgre);
-
+		//Label Höhe
 		lblHhe = new JLabel("Höhe:");
 		lblHhe.setHorizontalAlignment(SwingConstants.CENTER);
 		lblHhe.setBounds(6, 30, 61, 16);
 		layeredPanePanelSize.add(lblHhe);
-
+		// Textfeld der Höhe
 		txtPanelHeightadd = new JTextField();
 		txtPanelHeightadd.setText("450");
 		txtPanelHeightadd.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtPanelHeightadd.setBounds(62, 24, 50, 28);
 		layeredPanePanelSize.add(txtPanelHeightadd);
 		txtPanelHeightadd.setColumns(10);
-
+		// Label Breite
 		lblBreite = new JLabel("Breite:");
 		lblBreite.setHorizontalAlignment(SwingConstants.CENTER);
 		lblBreite.setBounds(113, 30, 61, 16);
 		layeredPanePanelSize.add(lblBreite);
-
+		// Textfeld der Breite
 		txtPanelWidthadd = new JTextField();
 		txtPanelWidthadd.setText("900");
 		txtPanelWidthadd.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -783,6 +809,7 @@ public class SkyLife {
 		layeredPanePanelSize.add(txtPanelWidthadd);
 		txtPanelWidthadd.setColumns(10);
 
+		// Button zum setzen de Panelgröße
 		// soblad Objekte enthalten im Panel muss Button deaktiviert werden!!!
 		btnSetPanelSize = new JButton("Setzen");
 		btnSetPanelSize.setBounds(0, 54, 117, 29);
@@ -791,10 +818,11 @@ public class SkyLife {
 		btnSetPanelSize.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-
+				
 				PanelHeight = Integer.parseInt(txtPanelHeightadd.getText());
 				PanelWidth = Integer.parseInt(txtPanelWidthadd.getText());
 				if (PanelHeight <= 657 && PanelWidth <= 1820) {
+					// anpassen der Labels und Textfelder
 					panel.setBounds(40, 250, PanelWidth, PanelHeight);
 					txtInfo.setBounds(40, 250 + PanelHeight + 5, 450, 25);
 					lblMessage.setBounds(6, 250 + PanelHeight + 40, 66, 16);
@@ -812,21 +840,20 @@ public class SkyLife {
 		});
 
 		// Objekt entfernen
-
 		layeredPaneDelete = new JLayeredPane();
 		layeredPaneDelete.setBorder(new LineBorder(new Color(0, 0, 0)));
 		layeredPaneDelete.setBounds(671, 137, 250, 83);
 		frame.getContentPane().add(layeredPaneDelete);
-
+		// Label Nameentfernen
 		lblNameEnt = new JLabel("Name:");
 		lblNameEnt.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNameEnt.setBounds(6, 18, 61, 16);
 		layeredPaneDelete.add(lblNameEnt);
-
+		// comboBox zum Entfernen
 		comboBoxNameEnt = new JComboBox<String>();
 		comboBoxNameEnt.setBounds(70, 15, 150, 25);
 		layeredPaneDelete.add(comboBoxNameEnt);
-
+		// Button zum Entfernen
 		btnEntfernen = new JButton("Entfernen");
 		btnEntfernen.setBounds(5, 50, 95, 25);
 		layeredPaneDelete.add(btnEntfernen);
@@ -847,7 +874,6 @@ public class SkyLife {
 		panel.setBounds(40, 250, PanelWidth, PanelHeight);
 
 		// Anzeige unterhalb des Panels
-
 		txtInfo = new JTextPane();
 		txtInfo.setText("Panelgröße:   Höhe: " + PanelHeight + " Breite: "
 				+ PanelWidth + "      Anzahl Objekte: " + ObjectList.size());
@@ -875,36 +901,12 @@ public class SkyLife {
 		frame.getContentPane().add(lblMessageTxt);
 		
 	}
-
-	public void saveObject(List<Object> saveList, File datei) {
-		PrintWriter printWriter = null;
-
-		try {
-			printWriter = new PrintWriter(new BufferedWriter(new FileWriter(
-					datei)));
-			Iterator<Object> iter = saveList.iterator();
-			while (iter.hasNext()) {
-				Object o = iter.next();
-				printWriter.println(o);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (printWriter != null)
-				printWriter.close();
-		}
-
-	}
-
-	public BufferedReader loadFile(String fileName) {
-		FileReader fr = null;
-		BufferedReader br = null;
-		try {
-			fr = new FileReader(fileName);
-			br = new BufferedReader(fr);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return br;
+	
+	public static void main(String[] args) {
+		window = new SkyLife();
+		window.frame.setVisible(true);
+		tmov = new MovementThread(window);
+		tcol = new CollisionThread(window);
+		trep = new RepaintThread(window);
 	}
 }

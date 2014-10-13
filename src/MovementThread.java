@@ -13,19 +13,20 @@ import java.util.List;
 public class MovementThread extends Thread {
 
 	SkyLife app;
-	boolean running = true;
-	List<Figur> RemoveListFlug = new ArrayList<Figur>();
-	List<Figur> RemoveListTaube = new ArrayList<Figur>();
-	List<Figur> RemoveListGreif = new ArrayList<Figur>();
-	int countFlug = 0;
-	int countTaube = 0;
-	int countGreif = 0;
-	int countGamOv = 0;
-
+	boolean running = true;										// true = Thread läuft
+	List<Figur> RemoveListFlug = new ArrayList<Figur>();		// Liste für das löschen der Flugzeuge
+	List<Figur> RemoveListTaube = new ArrayList<Figur>();		// Liste für das löschen der Tauben
+	List<Figur> RemoveListGreif = new ArrayList<Figur>();		// Liste für das löschen der Greifvogel
+	int countFlug = 0;											// counter der Flugzeuge
+	int countTaube = 0;											// counter der Tauben
+	int countGreif = 0;											// counter der Greifvögel
+	boolean GamOv = false;										// false = kein GameOver
+	
 	public MovementThread(SkyLife app) {
 		this.app = app;
 	}
 
+	// Bewegung der Tauben
 	public void MovementTaube() {
 		synchronized (app.ObjectList) {
 			for (Figur f : app.ObjectList) {
@@ -43,14 +44,14 @@ public class MovementThread extends Thread {
 				}
 			}
 		}
-		// entfernen der Flugzeuge aus der ObjectListe
+		// entfernen der Taube aus der ObjectListe
 		for (int i = 0; i < RemoveListTaube.size(); i++) {
 			app.ObjectList.remove(RemoveListTaube.get(i));
 			app.countTaube--;
 			app.updateInfo();
 		}
 	}
-
+	// Bewegung der Greifvögel
 	public void MovementGreifvogel() {
 		synchronized (app.ObjectList) {
 			for (Figur f : app.ObjectList) {
@@ -68,14 +69,14 @@ public class MovementThread extends Thread {
 				}
 			}
 		}
-		// entfernen der Flugzeuge aus der ObjectListe
+		// entfernen der Greifvögel aus der ObjectListe
 		for (int i = 0; i < RemoveListGreif.size(); i++) {
 			app.ObjectList.remove(RemoveListGreif.get(i));
 			app.countGreifvogel--;
 			app.updateInfo();
 		}
 	}
-
+	// Bewegung des Meteors
 	public void MovementMeteor() {
 		synchronized (app.ObjectList) {
 			for (Figur f : app.ObjectList) {
@@ -90,7 +91,7 @@ public class MovementThread extends Thread {
 			}
 		}
 	}
-
+	// Bewegung der Flugzeuge
 	public void MovementFlugzeug() {
 		synchronized (app.ObjectList) {
 			for (Figur f : app.ObjectList) {
@@ -150,23 +151,23 @@ public class MovementThread extends Thread {
 			i = Math.random();
 		}
 		if (i < 0.5) {
-			mult = -1;
+			mult = -1;		// nach links
 		} else {
-			mult = 1;
+			mult = 1;		// nach rechts
 		}
 		if ((x + 45) < 0) {
 			x = app.PanelWidth;
 		} else if ((x - 45) > app.PanelWidth) {
 			x = 0;
 		}
-		// änderung berechnungen
+		// Änderung berechnen
 		if ((countTaube % 3) == 0) {
 			x = x + mult * speed;
 		}
 		return x;
 	}
 
-	// berechnung von y der taube
+	// Berechnung von y der taube
 	public int computeYTaube(int y, int speed, int countTaube) {
 		if ((y + 30) < 0 || (y - 30) > app.PanelHeight) {
 			y = -666;
@@ -182,14 +183,14 @@ public class MovementThread extends Thread {
 				mult = 1;
 			}
 
-			// änderung berechnungen
+			// Änderung berechnen
 			if ((countTaube % 5) == 0) {
 				y = y + (mult * speed) / 2;
 			}
 		}
 		return y;
 	}
-
+	// Berechnung von x der Greifvögel
 	public int computeXGreif(int x, int speed, int countGreif) {
 
 		if ((countGreif % 150) == 0 || (countGreif % 150) == 1
@@ -206,13 +207,13 @@ public class MovementThread extends Thread {
 		} else if ((x - 50) > app.PanelWidth) {
 			x = 0;
 		}
-		// änderung berechnungen
+		// Änderung berechnen
 		if ((countGreif % 3) == 0) {
 			x = (int) 1.2 * (x + mult * speed);
 		}
 		return x;
 	}
-
+	// Berechnung von y der Greifvogel
 	public int computeYGreif(int y, int speed, int countGreif) {
 		if ((y + 20) < 0 || (y - 20) > app.PanelHeight) {
 			y = -666;
@@ -228,7 +229,7 @@ public class MovementThread extends Thread {
 				mult = 1;
 			}
 
-			// änderung berechnungen
+			// Änderung berechnen
 			if ((countGreif % 5) == 0) {
 				y = (int) 1.2 * (y + (mult * speed) / 2);
 			}
@@ -247,20 +248,17 @@ public class MovementThread extends Thread {
 	public void GameOver(String a) {
 		app.lblMessageTxt.setText("Game Over: " + a);
 		
-		// Aktivierung des Buttons zum Setzen der Panelgröße, wenn keine Objekte
-		// im Panel
+		// Aktivierung des Buttons zum Setzen der Panelgröße, wenn keine Objekte im Panel
+		//stoppen der Threads
 		app.btnSetPanelSize.setEnabled(true);
 		app.stop.setEnabled(false);
 		app.updateInfo();
-		countGamOv++;
+		GamOv = true;
 		app.killedAnimals = 0;
 		app.updateKilledAnimals();
 		SkyLife.tmov.running = false;
 		SkyLife.trep.running = false;
 		SkyLife.tcol.running = false;
-		
-		// Löschen aller verbleibenden Objekte in der Liste
-//		DeleteObjectCollisionAll();
 	}
 
 	public void run() {
@@ -280,10 +278,11 @@ public class MovementThread extends Thread {
 			}
 
 		}
-		if (countGamOv >= 1) {
+		// wenn Gam Over dann Objekte löschen
+		if (GamOv == true) {
 			app.panel.setBackground(Color.black);
 			DeleteObjectCollisionAll();
-			countGamOv--;
+			GamOv = false;
 		}
 	}
 

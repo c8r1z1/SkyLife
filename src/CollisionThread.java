@@ -1,22 +1,24 @@
 import java.awt.Color;
 
+
 public class CollisionThread extends Thread {
 
 	boolean running = true;
 
 	SkyLife app;
-	boolean collision = false;
-	int deletedObjects = 0;
-	int deletedObjectscleanList = 0;
-	String delCount = null;
-	int countGamOv = 0;
-
+	boolean collision = false;			// false = keine collsion
+	int deletedObjects = 0;				// Anzahl der gelöschten Objekte
+	int deletedObjectscleanList = 0;	// Anzahl Objekte in CleanList
+	String delObject = null;			// String für überprüfen des Types
+	boolean GamOv = false;				// false = kein Game Over
+	
 	public CollisionThread(SkyLife app) {
 
 		this.app = app;
 
 	}
 
+	// falls Figur außerhalb des Panels
 	public void CorrectXCollision(Figur f) {
 		if (f.x < 0) {
 			f.x = 0;
@@ -26,7 +28,8 @@ public class CollisionThread extends Thread {
 		}
 
 	}
-
+	
+	// falls Figur außerhalb des Panels
 	public void CorrectYCollision(Figur f) {
 
 		if (f.y < 0) {
@@ -37,6 +40,7 @@ public class CollisionThread extends Thread {
 		}
 	}
 
+	//Überprüfung ob Figur ein Tier ist
 	public boolean isAnimal(int i) {
 
 		if (app.ObjectList.get(i) instanceof Taube
@@ -45,7 +49,8 @@ public class CollisionThread extends Thread {
 		}
 		return false;
 	}
-
+	
+	
 	public void Collision() {
 
 		synchronized (app.ObjectList) {
@@ -65,7 +70,7 @@ public class CollisionThread extends Thread {
 						}
 
 						if (collision) {
-
+							//Ausgabe der Message das Collsion stattfindet
 							if (app.ObjectList.get(i).getClass()
 									.equals(app.ObjectList.get(j).getClass()) == false) {
 								// Ausgabe Message: Objekt a kollidiert mit
@@ -79,38 +84,46 @@ public class CollisionThread extends Thread {
 												+ " "
 												+ app.ObjectList.get(j).name);
 							}
+							// Collision Wolkenkratzer und Flugzeug
 							if (app.ObjectList.get(i) instanceof Wolkenkratzer
 									&& app.ObjectList.get(j) instanceof Flugzeug) {
 								// Game Over da Kollateralschaden entstanden
 								GameOver("Flugzeug in Wolkenkratzer gecrasht");
 							}
+							// Collision Wolkenkratzer mit Taube oder Greifvogel
 							if (app.ObjectList.get(i) instanceof Wolkenkratzer
 									&& isAnimal(j) == true) {
-								delCount = app.ObjectList.get(j).Typ;
-								if (delCount == "Taube") {
+								// runterzählen des Counters
+								delObject = app.ObjectList.get(j).Typ;
+								if (delObject == "Taube") {
 									app.countTaube--;
 								} else {
 									app.countGreifvogel--;
 								}
 								DeleteObjectCollision(j, i);
 							}
+							//Collision Flugzeug und Wolkenkratzer
 							if (app.ObjectList.get(i) instanceof Flugzeug
 									&& app.ObjectList.get(j) instanceof Wolkenkratzer) {
 								// Game Over da Kollateralschaden entstanden
 								GameOver("Flugzeug in Wolkenkratzer gecrasht");
 							}
+							//Collision Flugzeug und FLugzeug
 							if (app.ObjectList.get(i) instanceof Flugzeug
 									&& app.ObjectList.get(j) instanceof Flugzeug) {
 								// Game Over da Kollateralschaden entstanden
 								GameOver("Flugzeug in anderes Flugzeug gecrasht");
 							}
+							// Collision Flugzeug mit Taube oder Greifvogel
 							if (app.ObjectList.get(i) instanceof Flugzeug
 									&& isAnimal(j) == true) {
+								// chance auf Flugzeugabsturz durch Taube oder Greifvogel
 								if (Math.random() * 10 > 9.9) {
 									GameOver("Flugzeugabsturz durch Vogel in der Turbine");
 								} else {
-									delCount = app.ObjectList.get(j).Typ;
-									if (delCount == "Taube") {
+									// runterzählen des Counters
+									delObject = app.ObjectList.get(j).Typ;
+									if (delObject == "Taube") {
 										app.countTaube--;
 									} else {
 										app.countGreifvogel--;
@@ -118,13 +131,16 @@ public class CollisionThread extends Thread {
 									DeleteObjectCollision(j, i);
 								}
 							}
+							// Collision Taube oder Greifvogel mit Fugzeug
 							if (app.ObjectList.get(j) instanceof Flugzeug
 									&& isAnimal(i) == true) {
+								// chance auf Flugzeugabsturz durch Taube oder Greifvogel 
 								if (Math.random() * 10 > 9.9) {
 									GameOver("Flugzeugabsturz durch Vogel in der Turbine");
 								} else {
-									delCount = app.ObjectList.get(i).Typ;
-									if (delCount == "Taube") {
+									// runterzählen des Counters
+									delObject = app.ObjectList.get(i).Typ;
+									if (delObject == "Taube") {
 										app.countTaube--;
 									} else {
 										app.countGreifvogel--;
@@ -132,19 +148,25 @@ public class CollisionThread extends Thread {
 									DeleteObjectCollision(i, j);
 								}
 							}
+							//Collision Greifvogel und Wolkenkratzer
 							if (app.ObjectList.get(i) instanceof Greifvogel
 									&& app.ObjectList.get(j) instanceof Wolkenkratzer) {
+								// runterzählen des Counters
 								app.countGreifvogel--;
 								DeleteObjectCollision(i, j);
 							}
+							// Collision Greifvogel und Taube
 							if (app.ObjectList.get(i) instanceof Greifvogel
 									&& app.ObjectList.get(j) instanceof Taube) {
+								// runterzählen des Counters
 								app.countTaube--;
 								DeleteObjectCollision(j, i);
 							}
+							// Collision Taube und Greifvogel oder Wolkenkratzer
 							if (app.ObjectList.get(i) instanceof Taube
 									&& (app.ObjectList.get(j) instanceof Greifvogel || app.ObjectList
 											.get(j) instanceof Wolkenkratzer)) {
+								// runterzählen des Counters
 								app.countTaube--;
 								DeleteObjectCollision(i, j);
 							}
@@ -184,7 +206,7 @@ public class CollisionThread extends Thread {
 				+ app.ObjectList.get(i).Typ + " " + app.ObjectList.get(i).name
 				+ " kollidiert mit " + app.ObjectList.get(j).Typ + " "
 				+ app.ObjectList.get(j).name);
-		// Seitverschiebung
+		// Horizontalverschiebung
 		if (app.ObjectList.get(i).y <= (app.ObjectList.get(j).y + app.ObjectList
 				.get(j).height)
 				|| app.ObjectList.get(j).y <= (app.ObjectList.get(i).y + app.ObjectList
@@ -259,7 +281,7 @@ public class CollisionThread extends Thread {
 
 	}
 
-	// Löschung verbelibende Objekte bei Game Over
+	// Löschung verbliebende Objekte bei Game Over
 	public void DeleteObjectCollisionAll() {
 		app.ObjectList.clear();
 		app.comboBoxNameEnt.removeAllItems();
@@ -270,8 +292,10 @@ public class CollisionThread extends Thread {
 	public void GameOver(String a) {
 		app.lblMessageTxt.setText("Game Over: " + a);
 
-		// Aktivierung des Buttons zum Setzen der Panelgröße, wenn keine Objekte
-		// im Panel
+		// Aktivierung des Buttons zum Setzen der Panelgröße, wenn keine Objekte im Panel
+		// zurücksetzen der Counter
+		// zurücksetzen andere Felder
+		// stoppen der Threads
 		app.btnSetPanelSize.setEnabled(true);
 		app.stop.setEnabled(false);
 		app.updateInfo();
@@ -280,7 +304,7 @@ public class CollisionThread extends Thread {
 		app.countGreifvogel = 0;
 		app.countFlugzeug = 0;
 		app.countWolkenkratzer = 0;
-		countGamOv++;
+		GamOv = true;
 		app.updateKilledAnimals();
 		app.nameFieldEinf.setText(null);
 		app.spinnerX.setValue(0);
@@ -288,9 +312,6 @@ public class CollisionThread extends Thread {
 		SkyLife.tmov.running = false;
 		SkyLife.trep.running = false;
 		SkyLife.tcol.running = false;
-
-		// Löschen aller verbleibenden Objekte in der Liste
-		// DeleteObjectCollisionAll();
 	}
 
 	public void run() {
@@ -305,10 +326,11 @@ public class CollisionThread extends Thread {
 				e.printStackTrace();
 			}
 		}
-		if (countGamOv >= 1) {
+		// wenn Gam Over dann Objekte löschen
+		if (GamOv == true) {
 			app.panel.setBackground(Color.black);
 			DeleteObjectCollisionAll();
-			countGamOv--;
+			GamOv = false;
 		}
 	}
 }

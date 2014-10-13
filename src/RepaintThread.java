@@ -1,6 +1,6 @@
 public class RepaintThread extends Thread {
 
-	boolean running = true;
+	boolean running = true; // true = Thread läuft
 
 	SkyLife app;
 
@@ -12,6 +12,7 @@ public class RepaintThread extends Thread {
 		while (running) {
 			app.panel.repaint();
 			try {
+				// alle 20 Millisekunden neu zeichnen 
 				sleep(20);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
