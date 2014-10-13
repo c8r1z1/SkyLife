@@ -1,3 +1,6 @@
+import java.awt.Color;
+
+
 public class CollisionThread extends Thread {
 
 	boolean running = true;
@@ -258,6 +261,7 @@ public class CollisionThread extends Thread {
 		// im Panel
 		app.btnSetPanelSize.setEnabled(true);
 		app.stop.setEnabled(false);
+		app.panel.setBackground(Color.BLACK);
 		app.updateInfo();
 		app.killedAnimals = 0;
 		app.countTaube = 0;

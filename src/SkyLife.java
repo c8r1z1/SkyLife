@@ -96,8 +96,6 @@ public class SkyLife {
 
 	// Thread für Bewegung der Objekte
 	static MovementThread tmov;
-	// MovementTestthread
-	static MovementTest tmovtest;
 	// Thread für Kollisionsüberprüfung
 	static CollisionThread tcol;
 	// Thread für Neuzeichnung des Panels
@@ -277,8 +275,7 @@ public class SkyLife {
 			if (ObjectList.size() == 0) {
 				btnSetPanelSize.setEnabled(true);
 				stop.setEnabled(false);
-				// tmov.running = false;
-				tmovtest.running = false;
+				tmov.running = false;
 				tcol.running = false;
 				trep.running = false;
 				countTaube = 0;
@@ -480,9 +477,7 @@ public class SkyLife {
 	public static void main(String[] args) {
 		window = new SkyLife();
 		window.frame.setVisible(true);
-		// tmov = new MovementThread(window);
-
-		tmovtest = new MovementTest(window);
+		tmov = new MovementThread(window);
 		tcol = new CollisionThread(window);
 		trep = new RepaintThread(window);
 
@@ -505,8 +500,7 @@ public class SkyLife {
 
 			public void actionPerformed(ActionEvent e) {
 				// GUI stoppen
-				// tmov.running = false;
-				tmovtest.running = false;
+				 tmov.running = false;
 				tcol.running = false;
 				trep.running = false;
 
@@ -575,17 +569,14 @@ public class SkyLife {
 			public void actionPerformed(ActionEvent e) {
 
 				if (startclicked == 0) {
-					// tmov.start();
-					tmovtest.start();
+					 tmov.start();
 					tcol.start();
 					trep.start();
 				} else {
-					// tmov = new MovementThread(window);
-					tmovtest = new MovementTest(window);
+					 tmov = new MovementThread(window);
 					tcol = new CollisionThread(window);
 					trep = new RepaintThread(window);
-					// tmov.start();
-					tmovtest.start();
+					 tmov.start();
 					tcol.start();
 					trep.start();
 				}
@@ -607,8 +598,7 @@ public class SkyLife {
 		stop.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
-				// tmov.running = false;
-				tmovtest.running = false;
+				 tmov.running = false;
 				tcol.running = false;
 				trep.running = false;
 
@@ -645,9 +635,9 @@ public class SkyLife {
 				updateInfo();
 				panel.repaint();
 				// threads stoppen falls gestartet.. start, stop sichtbarkeit
-				if (tmovtest.running = true && tcol.running == true
+				if (tmov.running = true && tcol.running == true
 						&& trep.running == true) {
-					tmovtest.running = false;
+					tmov.running = false;
 					tcol.running = false;
 					trep.running = false;
 					start.setEnabled(true);
@@ -735,19 +725,25 @@ public class SkyLife {
 
 			public void actionPerformed(ActionEvent e) {
 				// Erstellung Objekt
-				if (countTaube >= 10) {
-					lblMessageTxt.setText("Maximale Anzahl an Tauben!");
-				} else if (countGreifvogel >= 10) {
-					lblMessageTxt.setText("Maximale Anzahl an Greifvögeln!");
-				} else if (countFlugzeug >= 3) {
-					lblMessageTxt.setText("Maximale Anzahl an Flugzeugen!");
-				} else if (countWolkenkratzer >= 2) {
-					lblMessageTxt.setText("Maximale Anzahl an Wolkenkratzern!");
-				} else {
+				if (countTaube <= 10 && countGreifvogel <= 10
+						&& countFlugzeug <= 3 && countWolkenkratzer <= 2) {
 					createObject();
+				}
+				if (countTaube > 10) {
+					lblMessageTxt.setText("Maximale Anzahl an Tauben!");
+				}
+				if (countGreifvogel > 10) {
+					lblMessageTxt.setText("Maximale Anzahl an Greifvögeln!");
+				}
+				if (countFlugzeug > 3) {
+					lblMessageTxt.setText("Maximale Anzahl an Flugzeugen!");
+				}
+				if (countWolkenkratzer > 2) {
+					lblMessageTxt.setText("Maximale Anzahl an Wolkenkratzern!");
 				}
 				start.setEnabled(true);
 			}
+
 		});
 
 		// Panel-Größe einstellen
@@ -876,7 +872,7 @@ public class SkyLife {
 		lblMessageTxt.setForeground(Color.RED);
 		lblMessageTxt.setBounds(72, 250 + PanelHeight + 40, 727, 16);
 		frame.getContentPane().add(lblMessageTxt);
-
+		
 	}
 
 	public void saveObject(List<Object> saveList, File datei) {
