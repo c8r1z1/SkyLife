@@ -1,6 +1,6 @@
 import java.io.Serializable;
 
-public  class Figur implements Serializable {
+public class Figur implements Serializable {
 
 	/**
 	 * 
@@ -16,8 +16,8 @@ public  class Figur implements Serializable {
 	public int x = 0, y = 0, speed = 0, height = 0, width = 0;
 	FORM f;
 
-	public Figur(String Typ, String name, int x, int y, int speed, int height, int width,
-			String a) {
+	public Figur(String Typ, String name, int x, int y, int speed, int height,
+			int width, String a) {
 		this.name = name;
 		this.x = x;
 		this.y = y;
@@ -34,7 +34,8 @@ public  class Figur implements Serializable {
 	}
 
 	public String toString() {
-		return Typ + " " + name + " " + x + " " + y + " " + speed + " " + height + " " + width  + " " + f ;
+		return Typ + " " + name + " " + x + " " + y + " " + speed + " "
+				+ height + " " + width + " " + f;
 	}
 
 	// Bestimmung x-Koordinate Mittelpunkt

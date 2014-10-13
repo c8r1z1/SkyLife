@@ -35,25 +35,25 @@ public class SkyLifePanel extends JPanel {
 
 	}
 
-	public void Draw(Graphics g){
-		synchronized (app.ObjectList){
+	public void Draw(Graphics g) {
+		synchronized (app.ObjectList) {
 			for (Figur f : app.ObjectList) {
 				if (f instanceof Taube) {
-					g.drawImage(taubeImg, f.x, f.y, null);	
+					g.drawImage(taubeImg, f.x, f.y, null);
 				}
-				if(f instanceof Greifvogel) {
-					g.drawImage(gvImg, f.x, f.y, null);	
+				if (f instanceof Greifvogel) {
+					g.drawImage(gvImg, f.x, f.y, null);
 				}
-				if(f instanceof Flugzeug) {
-					g.drawImage(fzImg, f.x, f.y, null);	
+				if (f instanceof Flugzeug) {
+					g.drawImage(fzImg, f.x, f.y, null);
 				}
-				if(f instanceof Wolkenkratzer) {
-					g.drawImage(wkImg, f.x, f.y, null);	
+				if (f instanceof Wolkenkratzer) {
+					g.drawImage(wkImg, f.x, f.y, null);
 				}
-				if (f instanceof Meteorit){
+				if (f instanceof Meteorit) {
 					g.drawImage(mImg, f.x, (f.y - 44), null);
 				}
-			}	
+			}
 		}
 	}
 

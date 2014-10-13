@@ -61,9 +61,7 @@ public class SkyLife {
 	// Button zum Verbinden zum Server + RMI Innenleben
 	// Remote Steueurung einbauen
 
-	// werte bei game over zurücksetzen
-
-	// maximale anzahl an objekten
+	// anzahl an objekten
 	// taube
 	int countTaube = 0;
 	// greifvogel
@@ -279,6 +277,10 @@ public class SkyLife {
 				tmovtest.running = false;
 				tcol.running = false;
 				trep.running = false;
+				countTaube = 0;
+				countGreifvogel = 0;
+				countFlugzeug = 0;
+				countWolkenkratzer = 0;
 				start.setEnabled(true);
 				nameFieldEinf.setText(null);
 				spinnerX.setValue(0);
@@ -612,7 +614,7 @@ public class SkyLife {
 
 			}
 		});
-		
+
 		// Stand zurücksetzen
 		btnNeu = new JButton("Neu");
 		btnNeu.setBounds(35, 128, 135, 25);
@@ -627,6 +629,10 @@ public class SkyLife {
 				nameFieldEinf.setText(null);
 				spinnerX.setValue(0);
 				spinnerY.setValue(0);
+				countTaube = 0;
+				countGreifvogel = 0;
+				countFlugzeug = 0;
+				countWolkenkratzer = 0;
 				panel.repaint();
 				// threads stoppen falls gestartet.. start, stop sichtbarkeit
 				if (tmovtest.running = true && tcol.running == true
@@ -637,6 +643,7 @@ public class SkyLife {
 					start.setEnabled(true);
 					stop.setEnabled(false);
 				}
+
 			}
 		});
 

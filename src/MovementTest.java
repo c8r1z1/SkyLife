@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,10 +74,10 @@ public class MovementTest extends Thread {
 	public void MovementMeteor() {
 		synchronized (app.ObjectList) {
 			for (Figur f : app.ObjectList) {
-
 				if (f instanceof Meteorit) {
-					f.x = app.PanelWidth/2;
+					f.x = app.PanelWidth / 2;
 					f.y += 10;
+					app.panel.setBackground(Color.BLACK);
 					if (f.y >= app.PanelHeight - f.height) {
 						GameOver("Meteoriteneinschlag, die Natur übt Rache für tote Vögel");
 					}
@@ -169,13 +170,11 @@ public class MovementTest extends Thread {
 					|| (countTaube % 150) == 2) {
 				i = Math.random();
 			}
-			System.out.println(i);
 			if (i < 0.5) {
 				mult = -1;
 			} else {
 				mult = 1;
 			}
-			System.out.println(mult);
 
 			// änderung berechnungen
 			if ((countTaube % 5) == 0) {
@@ -217,13 +216,11 @@ public class MovementTest extends Thread {
 					|| (countGreif % 150) == 2) {
 				i = Math.random();
 			}
-			System.out.println(i);
 			if (i < 0.5) {
 				mult = -1;
 			} else {
 				mult = 1;
 			}
-			System.out.println(mult);
 
 			// änderung berechnungen
 			if ((countGreif % 5) == 0) {
@@ -265,6 +262,7 @@ public class MovementTest extends Thread {
 			MovementTaube();
 			MovementGreifvogel();
 			MovementFlugzeug();
+			MovementMeteor();
 
 			try {
 				sleep(20);

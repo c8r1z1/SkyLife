@@ -1,12 +1,10 @@
-
 public class Flugzeug extends Flugobjekt {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	
+
 	static int x = 0, y = 0, height = 80, width = 100, speed = 5;
 	static String a = "Rechteck";
 	static String Typ = "Flugzeug";
