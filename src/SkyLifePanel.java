@@ -1,7 +1,5 @@
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -25,16 +23,16 @@ public class SkyLifePanel extends JPanel {
 	public SkyLifePanel(SkyLife app) {
 		this.app = app;
 		try {
-//			taubeImg = ImageIO.read(new File("img/taube.png"));
-//			gvImg = ImageIO.read(new File("img/greifvogel.png"));
-//			fzImg = ImageIO.read(new File("img/flugzeug.png"));
-//			wkImg = ImageIO.read(new File("img/wolkenkratzer.png"));
-//			mImg = ImageIO.read(new File("img/meteorit.jpg"));
-			taubeImg = ImageIO.read(this.getClass().getResource("/Image/taube.png"));
-			gvImg = ImageIO.read(this.getClass().getResource("/Image/greifvogel.png"));
-			fzImg = ImageIO.read(this.getClass().getResource("/Image/flugzeug.png"));
-			wkImg = ImageIO.read(this.getClass().getResource("/Image/wolkenkratzer.png"));
-			mImg = ImageIO.read(this.getClass().getResource("/Image/meteorit.jpg"));
+			taubeImg = ImageIO.read(this.getClass().getResource(
+					"/Image/taube.png"));
+			gvImg = ImageIO.read(this.getClass().getResource(
+					"/Image/greifvogel.png"));
+			fzImg = ImageIO.read(this.getClass().getResource(
+					"/Image/flugzeug.png"));
+			wkImg = ImageIO.read(this.getClass().getResource(
+					"/Image/wolkenkratzer.png"));
+			mImg = ImageIO.read(this.getClass().getResource(
+					"/Image/meteorit.jpg"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

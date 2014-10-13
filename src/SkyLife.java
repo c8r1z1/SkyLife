@@ -515,6 +515,7 @@ public class SkyLife {
 				File file = new File("src/Save/SkyLife.ser");
 				saveObject(SaveList, file);
 				// System.out.println(ObjectList);
+			lblMessageTxt.setText("Stand gespeichert!");
 			}
 		});
 
