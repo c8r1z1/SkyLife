@@ -530,7 +530,7 @@ public class SkyLife {
 
 				try {
 					while ((zeile = br.readLine()) != null) {
-
+						
 						fig.Typ = zeile.toString().substring(0,
 								zeile.indexOf(" "));
 						fig.name = zeile.toString().substring(
@@ -629,6 +629,7 @@ public class SkyLife {
 				countGreifvogel = 0;
 				countFlugzeug = 0;
 				countWolkenkratzer = 0;
+				panel.setBackground(Color.white);
 				laden.setEnabled(true);
 				killedAnimals = 0;
 				updateKilledAnimals();

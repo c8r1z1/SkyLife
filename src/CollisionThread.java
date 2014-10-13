@@ -1,6 +1,5 @@
 import java.awt.Color;
 
-
 public class CollisionThread extends Thread {
 
 	boolean running = true;
@@ -10,6 +9,7 @@ public class CollisionThread extends Thread {
 	int deletedObjects = 0;
 	int deletedObjectscleanList = 0;
 	String delCount = null;
+	int countGamOv = 0;
 
 	public CollisionThread(SkyLife app) {
 
@@ -228,15 +228,29 @@ public class CollisionThread extends Thread {
 			app.killedAnimals++;
 			app.updateKilledAnimals();
 			meteoritProof();
+			app.deleteObjectList(app.ObjectList.get(i).name);
+			app.ObjectList.set(i, null);
+			deletedObjects++;
+		} else if (isAnimal(i) && isAnimal(j)) {
+			app.killedAnimals++;
+			app.updateKilledAnimals();
+			meteoritProof();
+			if (app.ObjectList.get(i).Typ == "Taube") {
+				app.deleteObjectList(app.ObjectList.get(i).name);
+				app.ObjectList.set(i, null);
+				deletedObjects++;
+			}
+			if(app.ObjectList.get(j).Typ == "Taube"){
+				app.deleteObjectList(app.ObjectList.get(j).name);
+				app.ObjectList.set(j, null);
+				deletedObjects++;
+			}
 		}
-		app.deleteObjectList(app.ObjectList.get(i).name);
-		app.ObjectList.set(i, null);
-		deletedObjects++;
 	}
 
 	// Bei 10 getöteten Vögeln, rächt sich die Natur
 	public void meteoritProof() {
-		if (app.killedAnimals == 3) {
+		if (app.killedAnimals == 10) {
 			Meteorit meteor = new Meteorit("Destroyer", app.PanelWidth);
 			app.ObjectList.add(meteor);
 			// Zerstörung aller Objekte auf dem Weg
@@ -255,19 +269,18 @@ public class CollisionThread extends Thread {
 	// Game Over da Kollateralschaden entstanden
 	public void GameOver(String a) {
 		app.lblMessageTxt.setText("Game Over: " + a);
-		// Löschen aller verbleibenden Objekte in der Liste
-		DeleteObjectCollisionAll();
+
 		// Aktivierung des Buttons zum Setzen der Panelgröße, wenn keine Objekte
 		// im Panel
 		app.btnSetPanelSize.setEnabled(true);
 		app.stop.setEnabled(false);
-		app.panel.setBackground(Color.BLACK);
 		app.updateInfo();
 		app.killedAnimals = 0;
 		app.countTaube = 0;
 		app.countGreifvogel = 0;
 		app.countFlugzeug = 0;
 		app.countWolkenkratzer = 0;
+		countGamOv++;
 		app.updateKilledAnimals();
 		app.nameFieldEinf.setText(null);
 		app.spinnerX.setValue(0);
@@ -275,6 +288,9 @@ public class CollisionThread extends Thread {
 		SkyLife.tmov.running = false;
 		SkyLife.trep.running = false;
 		SkyLife.tcol.running = false;
+
+		// Löschen aller verbleibenden Objekte in der Liste
+		// DeleteObjectCollisionAll();
 	}
 
 	public void run() {
@@ -288,6 +304,11 @@ public class CollisionThread extends Thread {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+		}
+		if (countGamOv >= 1) {
+			app.panel.setBackground(Color.black);
+			DeleteObjectCollisionAll();
+			countGamOv--;
 		}
 	}
 }

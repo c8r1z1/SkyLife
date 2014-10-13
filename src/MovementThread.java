@@ -20,6 +20,7 @@ public class MovementThread extends Thread {
 	int countFlug = 0;
 	int countTaube = 0;
 	int countGreif = 0;
+	int countGamOv = 0;
 
 	public MovementThread(SkyLife app) {
 		this.app = app;
@@ -46,6 +47,7 @@ public class MovementThread extends Thread {
 		for (int i = 0; i < RemoveListTaube.size(); i++) {
 			app.ObjectList.remove(RemoveListTaube.get(i));
 			app.countTaube--;
+			app.updateInfo();
 		}
 	}
 
@@ -70,6 +72,7 @@ public class MovementThread extends Thread {
 		for (int i = 0; i < RemoveListGreif.size(); i++) {
 			app.ObjectList.remove(RemoveListGreif.get(i));
 			app.countGreifvogel--;
+			app.updateInfo();
 		}
 	}
 
@@ -108,6 +111,7 @@ public class MovementThread extends Thread {
 		for (int i = 0; i < RemoveListFlug.size(); i++) {
 			app.ObjectList.remove(RemoveListFlug.get(i));
 			app.countFlugzeug--;
+			app.updateInfo();
 		}
 	}
 
@@ -242,18 +246,21 @@ public class MovementThread extends Thread {
 	// Game Over da Kollateralschaden entstanden
 	public void GameOver(String a) {
 		app.lblMessageTxt.setText("Game Over: " + a);
-		// Löschen aller verbleibenden Objekte in der Liste
-		DeleteObjectCollisionAll();
+		
 		// Aktivierung des Buttons zum Setzen der Panelgröße, wenn keine Objekte
 		// im Panel
 		app.btnSetPanelSize.setEnabled(true);
 		app.stop.setEnabled(false);
 		app.updateInfo();
+		countGamOv++;
 		app.killedAnimals = 0;
 		app.updateKilledAnimals();
 		SkyLife.tmov.running = false;
 		SkyLife.trep.running = false;
 		SkyLife.tcol.running = false;
+		
+		// Löschen aller verbleibenden Objekte in der Liste
+//		DeleteObjectCollisionAll();
 	}
 
 	public void run() {
@@ -272,6 +279,11 @@ public class MovementThread extends Thread {
 				e.printStackTrace();
 			}
 
+		}
+		if (countGamOv >= 1) {
+			app.panel.setBackground(Color.black);
+			DeleteObjectCollisionAll();
+			countGamOv--;
 		}
 	}
 
