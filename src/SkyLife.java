@@ -212,16 +212,19 @@ public class SkyLife {
 
 				Taube taube = new Taube(fig.name, fig.x, fig.y);
 				ObjectList.add(taube);
+				countTaube++;
 
 			} else if (fig.Typ.length() == 10) {
 
 				Greifvogel gv = new Greifvogel(fig.name, fig.x, fig.y);
 				ObjectList.add(gv);
+				countGreifvogel++;
 
 			} else if (fig.Typ.length() == 8) {
 
 				Flugzeug fz = new Flugzeug(fig.name, fig.x, fig.y);
 				ObjectList.add(fz);
+				countFlugzeug++;
 
 			} else {
 				if (fig.y != PanelHeight - Wolkenkratzer.height) {
@@ -229,6 +232,7 @@ public class SkyLife {
 				}
 				Wolkenkratzer wk = new Wolkenkratzer(fig.name, fig.x, fig.y);
 				ObjectList.add(wk);
+				countWolkenkratzer++;
 			}
 			frame.getContentPane().add(panel);
 			panel.repaint();
@@ -488,7 +492,7 @@ public class SkyLife {
 
 		frame = new JFrame();
 		frame.setResizable(true);
-		frame.setBounds(100, 100, 1000, 825);
+		frame.setBounds(0, 0, 1000, 825);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
@@ -498,7 +502,6 @@ public class SkyLife {
 		speichern.setBounds(35, 90, 135, 25);
 		frame.getContentPane().add(speichern);
 		speichern.addActionListener(new ActionListener() {
-			// int a;
 
 			public void actionPerformed(ActionEvent e) {
 				// GUI stoppen
@@ -515,7 +518,7 @@ public class SkyLife {
 				File file = new File("src/Save/SkyLife.ser");
 				saveObject(SaveList, file);
 				// System.out.println(ObjectList);
-			lblMessageTxt.setText("Stand gespeichert!");
+				lblMessageTxt.setText("Stand gespeichert!");
 			}
 		});
 
@@ -527,7 +530,6 @@ public class SkyLife {
 		laden.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent arg0) {
-
 				BufferedReader br = null;
 				String zeile;
 				br = loadFile("src/Save/SkyLife.ser");
@@ -555,8 +557,10 @@ public class SkyLife {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
-				lblMessageTxt.setText("Zuletzt gespeicherter Stand geladen!");
+				lblMessageTxt.setText("Stand geladen!");
+				updateInfo();
+				laden.setEnabled(false);
+				start.setEnabled(true);
 			}
 		});
 
@@ -565,7 +569,7 @@ public class SkyLife {
 		start = new JButton("Start");
 		start.setBounds(195, 50, 135, 25);
 		frame.getContentPane().add(start);
-
+		start.setEnabled(false);
 		start.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
@@ -590,7 +594,6 @@ public class SkyLife {
 				lblMessageTxt.setText("Spiel gestartet");
 				startclicked++;
 				start.setEnabled(false);
-
 			}
 		});
 
@@ -614,7 +617,6 @@ public class SkyLife {
 				stop.setEnabled(false);
 				start.setEnabled(true);
 				lblMessageTxt.setText("Spiel gestoppt");
-
 			}
 		});
 
@@ -628,6 +630,7 @@ public class SkyLife {
 			public void actionPerformed(ActionEvent arg0) {
 				// Items in Listen Entfernen.. Werte zurücksetzen
 				ObjectList.clear();
+				start.setEnabled(false);
 				comboBoxNameEnt.removeAllItems();
 				nameFieldEinf.setText(null);
 				spinnerX.setValue(0);
@@ -636,6 +639,10 @@ public class SkyLife {
 				countGreifvogel = 0;
 				countFlugzeug = 0;
 				countWolkenkratzer = 0;
+				laden.setEnabled(true);
+				killedAnimals = 0;
+				updateKilledAnimals();
+				updateInfo();
 				panel.repaint();
 				// threads stoppen falls gestartet.. start, stop sichtbarkeit
 				if (tmovtest.running = true && tcol.running == true
@@ -646,7 +653,7 @@ public class SkyLife {
 					start.setEnabled(true);
 					stop.setEnabled(false);
 				}
-
+				lblMessageTxt.setText("Neues Spiel!");
 			}
 		});
 
@@ -739,7 +746,7 @@ public class SkyLife {
 				} else {
 					createObject();
 				}
-
+				start.setEnabled(true);
 			}
 		});
 
@@ -790,10 +797,20 @@ public class SkyLife {
 
 				PanelHeight = Integer.parseInt(txtPanelHeightadd.getText());
 				PanelWidth = Integer.parseInt(txtPanelWidthadd.getText());
-				panel.setBounds(40, 250, PanelWidth, PanelHeight);
-				txtInfo.setBounds(40, 250 + PanelHeight + 5, 450, 25);
-				KilledAnimals.setBounds(788, 250 + PanelHeight + 5, 133, 25);
-				updateInfo();
+				if (PanelHeight <= 657 && PanelWidth <= 1820) {
+					panel.setBounds(40, 250, PanelWidth, PanelHeight);
+					txtInfo.setBounds(40, 250 + PanelHeight + 5, 450, 25);
+					lblMessage.setBounds(6, 250 + PanelHeight + 40, 66, 16);
+					lblMessageTxt
+							.setBounds(72, 250 + PanelHeight + 40, 727, 16);
+					frame.setBounds(0, 0, PanelWidth + 100, PanelHeight + 375);
+					KilledAnimals
+							.setBounds(788, 250 + PanelHeight + 5, 133, 25);
+					updateInfo();
+				} else {
+					lblMessageTxt
+							.setText("Maximale Höhe (657) oder maximale Breite (1820) erreicht!");
+				}
 			}
 		});
 
@@ -852,12 +869,12 @@ public class SkyLife {
 		// Feld für Ausgabe von Fehlermeldungen
 		lblMessage = new JLabel("Message:");
 		lblMessage.setForeground(Color.RED);
-		lblMessage.setBounds(6, 742, 66, 16);
+		lblMessage.setBounds(6, 250 + PanelHeight + 40, 66, 16);
 		frame.getContentPane().add(lblMessage);
 
 		lblMessageTxt = new JLabel("");
 		lblMessageTxt.setForeground(Color.RED);
-		lblMessageTxt.setBounds(72, 742, 727, 16);
+		lblMessageTxt.setBounds(72, 250 + PanelHeight + 40, 727, 16);
 		frame.getContentPane().add(lblMessageTxt);
 
 	}

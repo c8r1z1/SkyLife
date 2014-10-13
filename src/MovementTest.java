@@ -2,6 +2,8 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
+// neue Bewegung
+
 // Möglchkeit für neue Bewegung
 // Taube und Greifvogel vor, zurück, diagonal.. bei Berührung des Rahmens, zurückprallen, einfallswinkel gleich ausfalls winkel
 // Flugzeug von rechts nach links.. bei Berührung des Rahmens.. eintritt auf andere Seite

@@ -6,7 +6,7 @@ public class CollisionThread extends Thread {
 	boolean collision = false;
 	int deletedObjects = 0;
 	int deletedObjectscleanList = 0;
-	String delCount;
+	String delCount = null;
 
 	public CollisionThread(SkyLife app) {
 
@@ -83,13 +83,13 @@ public class CollisionThread extends Thread {
 							}
 							if (app.ObjectList.get(i) instanceof Wolkenkratzer
 									&& isAnimal(j) == true) {
-								DeleteObjectCollision(j, i);
 								delCount = app.ObjectList.get(j).Typ;
 								if (delCount == "Taube") {
 									app.countTaube--;
 								} else {
 									app.countGreifvogel--;
 								}
+								DeleteObjectCollision(j, i);
 							}
 							if (app.ObjectList.get(i) instanceof Flugzeug
 									&& app.ObjectList.get(j) instanceof Wolkenkratzer) {
@@ -106,13 +106,13 @@ public class CollisionThread extends Thread {
 								if (Math.random() * 10 > 9.9) {
 									GameOver("Flugzeugabsturz durch Vogel in der Turbine");
 								} else {
-									DeleteObjectCollision(j, i);
 									delCount = app.ObjectList.get(j).Typ;
 									if (delCount == "Taube") {
 										app.countTaube--;
 									} else {
 										app.countGreifvogel--;
 									}
+									DeleteObjectCollision(j, i);
 								}
 							}
 							if (app.ObjectList.get(j) instanceof Flugzeug
@@ -120,31 +120,30 @@ public class CollisionThread extends Thread {
 								if (Math.random() * 10 > 9.9) {
 									GameOver("Flugzeugabsturz durch Vogel in der Turbine");
 								} else {
-									DeleteObjectCollision(i, j);
 									delCount = app.ObjectList.get(i).Typ;
 									if (delCount == "Taube") {
 										app.countTaube--;
 									} else {
 										app.countGreifvogel--;
 									}
+									DeleteObjectCollision(i, j);
 								}
 							}
 							if (app.ObjectList.get(i) instanceof Greifvogel
 									&& app.ObjectList.get(j) instanceof Wolkenkratzer) {
-								DeleteObjectCollision(i, j);
 								app.countGreifvogel--;
-
+								DeleteObjectCollision(i, j);
 							}
 							if (app.ObjectList.get(i) instanceof Greifvogel
 									&& app.ObjectList.get(j) instanceof Taube) {
-								DeleteObjectCollision(j, i);
 								app.countTaube--;
+								DeleteObjectCollision(j, i);
 							}
 							if (app.ObjectList.get(i) instanceof Taube
 									&& (app.ObjectList.get(j) instanceof Greifvogel || app.ObjectList
 											.get(j) instanceof Wolkenkratzer)) {
-								DeleteObjectCollision(i, j);
 								app.countTaube--;
+								DeleteObjectCollision(i, j);
 							}
 							// Ausweichmanöver bei 2 Objekten gleichen Typs
 							if (app.ObjectList.get(i) instanceof Greifvogel
