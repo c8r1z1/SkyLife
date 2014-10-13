@@ -554,6 +554,8 @@ public class SkyLife {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				
+				lblMessageTxt.setText("Zuletzt gespeicherter Stand geladen!");
 			}
 		});
 
