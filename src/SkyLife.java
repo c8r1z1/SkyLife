@@ -512,7 +512,7 @@ public class SkyLife {
 							+ ObjectList.get(i).name + " "
 							+ ObjectList.get(i).x + " " + ObjectList.get(i).y);
 				}
-				File file = new File("SkyLife.ser");
+				File file = new File("src/Save/SkyLife.ser");
 				saveObject(SaveList, file);
 				// System.out.println(ObjectList);
 			}
@@ -529,7 +529,7 @@ public class SkyLife {
 
 				BufferedReader br = null;
 				String zeile;
-				br = loadFile("SkyLife.ser");
+				br = loadFile("src/Save/SkyLife.ser");
 
 				try {
 					while ((zeile = br.readLine()) != null) {
