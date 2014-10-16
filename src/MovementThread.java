@@ -82,7 +82,7 @@ public class MovementThread extends Thread {
 			for (Figur f : app.ObjectList) {
 				if (f instanceof Meteorit) {
 					f.x = app.PanelWidth / 2;
-					f.y += 8;
+					f.y += 10;
 					app.panel.setBackground(Color.BLACK);
 					if (f.y >= app.PanelHeight - f.height) {
 						GameOver("Meteoriteneinschlag, die Natur übt Rache für tote Vögel");
